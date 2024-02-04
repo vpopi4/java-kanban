@@ -19,9 +19,10 @@ public class TaskManager {
         return seq++;
     }
 
-    public void createTask(TaskDTO dto) {
+    public Task createTask(TaskDTO dto) {
         Task task = new Task(generateId(), dto);
         taskRepository.create(task);
+        return task;
     }
 
     public Task getTaskById(int id) {
