@@ -21,7 +21,7 @@ public class Subtask extends Task {
                 ",\n\tname='" + name + '\'' +
                 ",\n\tdescription='" + description + '\'' +
                 ",\n\tstatus=" + status +
-                ",\n\tepic=" + epic +
+                ",\n\tepic.id=" + epic.getId() +
                 "\n}";
     }
 }
