@@ -60,7 +60,7 @@ public class TaskManager {
         return subtasks.get(id);
     }
 
-    public ArrayList<Task> getAllTask() {
+    public ArrayList<Task> getAllTasks() {
         return new ArrayList<>(tasks.values());
     }
 
