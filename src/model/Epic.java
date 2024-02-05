@@ -23,11 +23,21 @@ public class Epic extends Task {
     @Override
     public String toString() {
         return "Epic{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", status=" + status +
-                ", subtasks.length=" + subtasks.size() +
-                '}';
+                "\n\tid=" + id +
+                ",\n\tname='" + name + '\'' +
+                ",\n\tdescription='" + description + '\'' +
+                ",\n\tstatus=" + status +
+                ",\n\tsubtasksIDs=" + getSubtaskIDs() +
+                "\n}";
+    }
+
+    private ArrayList<Integer> getSubtaskIDs() {
+        var list = new ArrayList<Integer>();
+
+        for (Subtask subtask: subtasks) {
+            list.add(subtask.getId());
+        }
+
+        return list;
     }
 }
