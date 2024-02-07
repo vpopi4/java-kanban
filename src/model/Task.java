@@ -6,7 +6,7 @@ import enums.TaskStatus;
 import java.util.Objects;
 
 public class Task {
-    protected final int id;
+    protected int id;
     protected String name;
     protected String description;
     protected TaskStatus status;
