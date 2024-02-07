@@ -9,63 +9,47 @@ public class Main {
     public static void main(String[] args) {
         TaskManager tm = new TaskManager();
 
-        System.out.println("Creating entities...\n");
-
-        Task firstTask = tm.createTask(
-                new TaskDTO("first task", "lorem ipsum dollar")
+        Epic epic = tm.createEpic(
+                new TaskDTO("epic", "All the leaves are brown")
         );
-        Task secondTask = tm.createTask(
-                new TaskDTO("Second task", "Рыбий текст - это круто!")
+        Subtask firstSubtask = tm.createSubtask(
+                new TaskDTO("first subtask", "And the sky is gray"),
+                epic.getId()
         );
-
-        Epic firstEpic = tm.createEpic(
-                new TaskDTO("first epic", "All the leaves are brown")
+        Subtask secondSubtask = tm.createSubtask(
+                new TaskDTO("second subtask", "I've been for a walk"),
+                epic.getId()
         );
-        Subtask firstSubtaskOfFirstEpic = tm.createSubtask(
-                new TaskDTO("first subtask of first epic", "And the sky is gray"),
-                firstEpic.getId()
-        );
-        Subtask secondSubtaskOfFirstEpic = tm.createSubtask(
-                new TaskDTO("second subtask of first epic", "I've been for a walk"),
-                firstEpic.getId()
+        Subtask thirdSubtask = tm.createSubtask(
+                new TaskDTO("third subtask", "On a winter's day"),
+                epic.getId()
         );
 
-        Epic socondEpic = tm.createEpic(
-                new TaskDTO("second epic", "On a winter's day")
-        );
-        Subtask firstSubtaskOfSecondEpic = tm.createSubtask(
-                new TaskDTO("first subtask of second epic", "I'd be safe and warm"),
-                socondEpic.getId()
-        );
-
-        System.out.println("Tasks:\n" + tm.getAllTasks() + "\n");
-        System.out.println("Epics:\n" + tm.getAllEpics() + "\n");
+        System.out.println("Creating entities...");
+        System.out.println("Epics:\n" + tm.getAllEpics());
         System.out.println("Subtasks:\n" + tm.getAllSubtasks() + "\n");
 
-        firstTask.setStatus(TaskStatus.IN_PROGRESS);
-        firstTask = tm.updateTask(firstTask);
-        System.out.println("Changing first task:\n" + firstTask + "\n");
+        firstSubtask.setStatus(TaskStatus.DONE);
+        firstSubtask = tm.updateSubtask(firstSubtask);
+        secondSubtask.setStatus(TaskStatus.DONE);
+        secondSubtask = tm.updateSubtask(secondSubtask);
+        thirdSubtask.setStatus(TaskStatus.IN_PROGRESS);
+        thirdSubtask = tm.updateSubtask(thirdSubtask);
 
-        firstSubtaskOfFirstEpic.setStatus(TaskStatus.DONE);
-        firstSubtaskOfFirstEpic = tm.updateSubtask(firstSubtaskOfSecondEpic);
-        secondSubtaskOfFirstEpic.setStatus(TaskStatus.IN_PROGRESS);
-        secondSubtaskOfFirstEpic = tm.updateSubtask(secondSubtaskOfFirstEpic);
-        System.out.println("Changing subtasks of firstEpic:\n"
-                + firstEpic + "\n" + firstEpic.getSubtasks() + "\n");
+        System.out.println("Changing subtasks of firstEpic...");
+        System.out.println("Epics:\n" + tm.getAllEpics());
+        System.out.println("Subtasks:\n" + tm.getAllSubtasks() + "\n");
 
-        secondSubtaskOfFirstEpic.setStatus(TaskStatus.DONE);
-        secondSubtaskOfFirstEpic = tm.updateSubtask(secondSubtaskOfFirstEpic);
-        System.out.println("Changing second subtask: " + secondSubtaskOfFirstEpic);
-        System.out.println(firstEpic + "\n");
+        tm.removeSubtask(thirdSubtask.getId());
 
-        System.out.println("Deleting first task...");
-        tm.removeTask(firstTask.getId());
-        System.out.println("Deleting first epic...");
-        tm.removeEpic(firstEpic.getId());
-        System.out.println("Printing all data:");
+        System.out.println("Deleting third subtask...");
+        System.out.println("Epics:\n" + tm.getAllEpics());
+        System.out.println("Subtasks:\n" + tm.getAllSubtasks() + "\n");
 
-        System.out.println("Tasks:\n" + tm.getAllTasks() + "\n");
-        System.out.println("Epics:\n" + tm.getAllEpics() + "\n");
+        tm.removeAllSubtasks();
+
+        System.out.println("Deleting all subtask...");
+        System.out.println("Epics:\n" + tm.getAllEpics());
         System.out.println("Subtasks:\n" + tm.getAllSubtasks() + "\n");
     }
 }

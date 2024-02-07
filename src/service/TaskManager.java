@@ -101,16 +101,22 @@ public class TaskManager {
     }
 
     public void removeAllSubtasks() {
+        subtasks.clear();
+
         for (Epic epic : getAllEpics()) {
             epic.getSubtasks().clear();
+            epic.setStatus(TaskStatus.NEW);
         }
-        subtasks.clear();
     }
 
     public void removeSubtask(int id) {
         Subtask subtask = subtasks.get(id);
-        subtask.getEpic().getSubtasks().remove(subtask);
+        Epic epic = subtask.getEpic();
+
+        epic.getSubtasks().remove(subtask);
         subtasks.remove(id);
+
+        epic.setStatus(calculateStatusOfEpic(epic));
     }
 
     public Task updateTask(Task task) {
