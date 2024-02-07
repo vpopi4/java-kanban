@@ -13,9 +13,9 @@ public class Task {
 
     public Task(int id, TaskDTO dto) {
         this.id = id;
-        this.name = dto.name;
-        this.description = dto.description;
-        this.status = dto.status;
+        this.name = dto.getName();
+        this.description = dto.getDescription();
+        this.status = dto.getStatus();
     }
 
     public int getId() {
