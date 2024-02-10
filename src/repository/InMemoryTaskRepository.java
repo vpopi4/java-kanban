@@ -1,6 +1,6 @@
 package repository;
 
-import interfaces.TaskRepository;
+import interfaces.repository.TaskRepository;
 import model.Task;
 
 import java.util.ArrayList;

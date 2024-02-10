@@ -1,4 +1,4 @@
-package interfaces;
+package interfaces.repository;
 
 import java.util.ArrayList;
 

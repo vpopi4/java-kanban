@@ -1,7 +1,7 @@
 package service;
 
 import dtos.TaskDTO;
-import interfaces.TaskRepository;
+import interfaces.repository.TaskRepository;
 import interfaces.TaskService;
 import model.Task;
 
