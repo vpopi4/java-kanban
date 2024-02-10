@@ -1,11 +1,11 @@
 package model;
 
-import dtos.TaskDTO;
+import dtos.TaskCreationData;
 
 public class Subtask extends Task {
     private Epic epic;
 
-    public Subtask(int id, TaskDTO dto, Epic epic) {
+    public Subtask(int id, TaskCreationData dto, Epic epic) {
         super(id, dto);
         this.epic = epic;
     }

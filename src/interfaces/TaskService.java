@@ -2,11 +2,11 @@ package interfaces;
 
 import java.util.ArrayList;
 
-import dtos.TaskDTO;
+import dtos.TaskCreationData;
 import model.Task;
 
 public interface TaskService {
-    Task create(TaskDTO dto);
+    Task create(TaskCreationData dto);
 
     Task get(Integer id);
     ArrayList<Task> getAll();

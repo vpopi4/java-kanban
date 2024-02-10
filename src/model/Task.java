@@ -1,6 +1,6 @@
 package model;
 
-import dtos.TaskDTO;
+import dtos.TaskCreationData;
 import enums.TaskStatus;
 
 public class Task {
@@ -9,7 +9,7 @@ public class Task {
     protected String description;
     protected TaskStatus status;
 
-    public Task(int id, TaskDTO dto) {
+    public Task(int id, TaskCreationData dto) {
         this.id = id;
         this.name = dto.getName();
         this.description = dto.getDescription();

@@ -1,6 +1,6 @@
 package service;
 
-import dtos.TaskDTO;
+import dtos.TaskCreationData;
 import interfaces.repository.TaskRepository;
 import interfaces.TaskService;
 import model.Task;
@@ -17,8 +17,8 @@ public abstract class AbstractTaskService implements TaskService {
     }
 
     @Override
-    public Task create(TaskDTO dto) {
-        Task task = new Task(idGenerator.generateNewId(), dto);
+    public Task create(TaskCreationData data) {
+        Task task = new Task(idGenerator.generateNewId(), data);
 
         repository.create(task);
 
