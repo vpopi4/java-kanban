@@ -3,10 +3,10 @@ package repository;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import interfaces.repository.EntityRepository;
+import interfaces.repository.Repository;
 import model.Task;
 
-public abstract class AbstractInMemoryRepository<Entity extends Task> implements EntityRepository<Entity, Integer> {
+public abstract class AbstractInMemoryRepository<Entity extends Task> implements Repository<Entity, Integer> {
     private HashMap<Integer, Entity> store;
 
     public AbstractInMemoryRepository() {

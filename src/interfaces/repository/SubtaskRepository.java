@@ -2,6 +2,6 @@ package interfaces.repository;
 
 import model.Subtask;
 
-public interface SubtaskRepository extends EntityRepository<Subtask, Integer> {
+public interface SubtaskRepository extends Repository<Subtask, Integer> {
     
 }

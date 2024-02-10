@@ -2,7 +2,7 @@ package interfaces.repository;
 
 import java.util.ArrayList;
 
-public interface EntityRepository<Entity, IDType> {
+public interface Repository<Entity, IDType> {
     Entity create(Entity entity);
 
     Entity get(IDType id);
