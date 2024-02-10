@@ -3,8 +3,6 @@ package model;
 import dtos.TaskDTO;
 import enums.TaskStatus;
 
-import java.util.Objects;
-
 public class Task {
     protected int id;
     protected String name;
