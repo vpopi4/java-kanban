@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import interfaces.HistoryManager;
 import model.Task;
 
-public class InMemoryHistoryManager implements HistoryManager<Task> {
+public class InMemoryHistoryManager implements HistoryManager {
     private final ArrayList<Task> list;
     private static final int MAX_SIZE = 10;
 
@@ -17,6 +17,10 @@ public class InMemoryHistoryManager implements HistoryManager<Task> {
     public void add(Task item) {
         if (list.size() >= MAX_SIZE) {
             list.remove(0);
+        }
+
+        if (item == null) {
+            throw new IllegalArgumentException("unexpected null");
         }
 
         list.add(item);

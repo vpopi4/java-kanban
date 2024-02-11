@@ -2,31 +2,29 @@ package service.taskService;
 
 import dtos.TaskCreationData;
 import interfaces.repository.TaskRepository;
+import interfaces.service.TaskService;
 import interfaces.HistoryManager;
-import interfaces.TaskService;
 import model.Task;
 import util.IdGenerator;
+import util.TaskManagerConfig;
 
 import java.util.ArrayList;
 
 public abstract class AbstractTaskService implements TaskService {
     private final TaskRepository repository;
     private final IdGenerator idGenerator;
-    private final HistoryManager<Task> historyService;
+    private final HistoryManager historyManager;
 
-    public AbstractTaskService(
-            TaskRepository repository,
-            IdGenerator idGenerator,
-            HistoryManager<Task> historyService
-    ) {
-        this.repository = repository;
-        this.idGenerator = idGenerator;
-        this.historyService = historyService;
+    public AbstractTaskService(TaskManagerConfig config) {
+        this.repository = config.getTaskRepository();
+        this.idGenerator = config.getIdGenerator();
+        this.historyManager = config.getHistoryManager();
     }
 
     @Override
     public Task create(TaskCreationData data) {
-        Task task = new Task(idGenerator.generateNewId(), data);
+        Integer id = idGenerator.generateNewId();
+        Task task = new Task(id, data);
 
         return repository.create(task);
     }
@@ -34,7 +32,7 @@ public abstract class AbstractTaskService implements TaskService {
     @Override
     public Task get(Integer id) {
         Task task = repository.get(id);
-        historyService.add(task);
+        historyManager.add(task);
         return task;
     }
 

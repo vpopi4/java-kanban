@@ -4,30 +4,26 @@ import java.util.ArrayList;
 
 import dtos.EpicUpdationData;
 import dtos.TaskCreationData;
-import interfaces.EpicService;
 import interfaces.HistoryManager;
 import interfaces.repository.EpicRepository;
 import interfaces.repository.SubtaskRepository;
+import interfaces.service.EpicService;
 import model.Epic;
 import model.Subtask;
-import model.Task;
 import util.IdGenerator;
+import util.TaskManagerConfig;
 
 public abstract class AbstractEpicService implements EpicService {
     private final EpicRepository epicRepo;
     private final SubtaskRepository subtaskRepo;
     private final IdGenerator idGenerator;
-    private final HistoryManager<Task> historyService;
+    private final HistoryManager historyManager;
 
-    public AbstractEpicService(
-            EpicRepository epicRepository,
-            SubtaskRepository subtaskRepository,
-            IdGenerator idGenerator,
-            HistoryManager<Task> historyService) {
-        this.epicRepo = epicRepository;
-        this.subtaskRepo = subtaskRepository;
-        this.idGenerator = idGenerator;
-        this.historyService = historyService;
+    public AbstractEpicService(TaskManagerConfig config) {
+        this.epicRepo = config.getEpicRepository();
+        this.subtaskRepo = config.getSubtaskRepository();
+        this.idGenerator = config.getIdGenerator();
+        this.historyManager = config.getHistoryManager();
     }
 
     @Override
@@ -40,7 +36,7 @@ public abstract class AbstractEpicService implements EpicService {
     @Override
     public Epic get(Integer id) {
         Epic epic = epicRepo.get(id);
-        historyService.add(epic);
+        historyManager.add(epic);
         return epic;
     }
 
