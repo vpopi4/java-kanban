@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import interfaces.EpicService;
 import interfaces.SubtaskService;
+import interfaces.TaskManager;
 import interfaces.TaskService;
 import interfaces.repository.EpicRepository;
 import interfaces.repository.SubtaskRepository;
@@ -18,7 +19,7 @@ import service.taskService.InMemoryTaskService;
 import util.History;
 import util.IdGenerator;
 
-public class InMemoryTaskManager {
+public class InMemoryTaskManager implements TaskManager {
     private final TaskRepository taskRepository;
     private final EpicRepository epicRepository;
     private final SubtaskRepository subtaskRepository;
@@ -56,18 +57,22 @@ public class InMemoryTaskManager {
         );
     }
 
+    @Override
     public TaskService getTaskService() {
         return taskService;
     }
 
+    @Override
     public EpicService getEpicService() {
         return epicService;
     }
 
+    @Override
     public SubtaskService getSubtaskService() {
         return subtaskService;
     }
 
+    @Override
     public ArrayList<Task> getHistory() {
         return historyService.getHistory();
     }
