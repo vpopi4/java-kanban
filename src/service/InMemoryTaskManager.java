@@ -3,6 +3,7 @@ package service;
 import java.util.ArrayList;
 
 import interfaces.EpicService;
+import interfaces.HistoryManager;
 import interfaces.SubtaskService;
 import interfaces.TaskManager;
 import interfaces.TaskService;
@@ -16,7 +17,7 @@ import repository.InMemoryTaskRepository;
 import service.epicService.InMemoryEpicService;
 import service.subtaskService.InMemorySubtaskService;
 import service.taskService.InMemoryTaskService;
-import util.History;
+import util.InMemoryHistoryManager;
 import util.IdGenerator;
 
 public class InMemoryTaskManager implements TaskManager {
@@ -28,11 +29,11 @@ public class InMemoryTaskManager implements TaskManager {
     private final EpicService epicService;
     private final SubtaskService subtaskService;
 
-    private final History<Task> historyService;
+    private final HistoryManager<Task> historyService;
 
     public InMemoryTaskManager() {
         IdGenerator idGenerator = new IdGenerator();
-        historyService = new History<>();
+        historyService = new InMemoryHistoryManager();
 
         taskRepository = new InMemoryTaskRepository();
         epicRepository = new InMemoryEpicRepository();

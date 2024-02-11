@@ -4,26 +4,26 @@ import java.util.ArrayList;
 
 import dtos.TaskCreationData;
 import enums.TaskStatus;
+import interfaces.HistoryManager;
 import interfaces.SubtaskService;
 import interfaces.repository.EpicRepository;
 import interfaces.repository.SubtaskRepository;
 import model.Epic;
 import model.Subtask;
 import model.Task;
-import util.History;
 import util.IdGenerator;
 
 public class AbstractSubtaskService implements SubtaskService {
     private final EpicRepository epicRepo;
     private final SubtaskRepository subtaskRepo;
     private final IdGenerator idGenerator;
-    private final History<Task> historyService;
+    private final HistoryManager<Task> historyService;
 
     public AbstractSubtaskService(
             EpicRepository epicRepository,
             SubtaskRepository subtaskRepository,
             IdGenerator idGenerator,
-            History<Task> historyService
+            HistoryManager<Task> historyService
     ) {
         this.epicRepo = epicRepository;
         this.subtaskRepo = subtaskRepository;

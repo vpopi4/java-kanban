@@ -1,9 +1,9 @@
 package service.subtaskService;
 
+import interfaces.HistoryManager;
 import interfaces.repository.EpicRepository;
 import interfaces.repository.SubtaskRepository;
 import model.Task;
-import util.History;
 import util.IdGenerator;
 
 public class InMemorySubtaskService extends AbstractSubtaskService {
@@ -12,7 +12,7 @@ public class InMemorySubtaskService extends AbstractSubtaskService {
             EpicRepository epicRepository,
             SubtaskRepository subtaskRepository,
             IdGenerator idGenerator,
-            History<Task> historyService
+            HistoryManager<Task> historyService
     ) {
         super(epicRepository, subtaskRepository, idGenerator, historyService);
     }

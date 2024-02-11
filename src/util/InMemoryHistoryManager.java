@@ -2,17 +2,19 @@ package util;
 
 import java.util.ArrayList;
 
+import interfaces.HistoryManager;
 import model.Task;
 
-public class History<T extends Task> {
-    private final ArrayList<T> list;
+public class InMemoryHistoryManager implements HistoryManager<Task> {
+    private final ArrayList<Task> list;
     private static final int MAX_SIZE = 10;
 
-    public History() {
+    public InMemoryHistoryManager() {
         list = new ArrayList<>(MAX_SIZE);
     }
 
-    public void add(T item) {
+    @Override
+    public void add(Task item) {
         if (list.size() >= MAX_SIZE) {
             list.remove(0);
         }
@@ -20,7 +22,8 @@ public class History<T extends Task> {
         list.add(item);
     }
 
-    public ArrayList<T> getHistory() {
+    @Override
+    public ArrayList<Task> getHistory() {
         return list;
     }
 }
