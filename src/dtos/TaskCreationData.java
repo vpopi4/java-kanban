@@ -2,12 +2,12 @@ package dtos;
 
 import enums.TaskStatus;
 
-public class TaskDTO {
+public class TaskCreationData {
     private String name;
     private String description;
     private TaskStatus status;
 
-    public TaskDTO(String name, String description) {
+    public TaskCreationData(String name, String description) {
         this.name = name;
         this.description = description;
         this.status = TaskStatus.NEW;

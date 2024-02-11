@@ -1,13 +1,13 @@
 package model;
 
-import dtos.TaskDTO;
+import dtos.TaskCreationData;
 
 import java.util.ArrayList;
 
 public class Epic extends Task {
     private final ArrayList<Subtask> subtasks;
 
-    public Epic(int id, TaskDTO dto) {
+    public Epic(int id, TaskCreationData dto) {
         super(id, dto);
         subtasks = new ArrayList<>();
     }
