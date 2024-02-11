@@ -19,6 +19,10 @@ public class InMemoryHistoryManager implements HistoryManager {
             list.remove(0);
         }
 
+        if (item == null) {
+            throw new IllegalArgumentException("unexpected null");
+        }
+
         list.add(item);
     }
 
