@@ -1,14 +1,14 @@
-package service;
+package util;
 
 import java.util.ArrayList;
 
 import model.Task;
 
-public class HistoryService<T extends Task> {
+public class History<T extends Task> {
     private final ArrayList<T> list;
     private static final int MAX_SIZE = 10;
 
-    public HistoryService() {
+    public History() {
         list = new ArrayList<>(MAX_SIZE);
     }
 

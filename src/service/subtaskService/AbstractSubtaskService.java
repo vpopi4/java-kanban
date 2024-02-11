@@ -10,20 +10,20 @@ import interfaces.repository.SubtaskRepository;
 import model.Epic;
 import model.Subtask;
 import model.Task;
-import service.HistoryService;
+import util.History;
 import util.IdGenerator;
 
 public class AbstractSubtaskService implements SubtaskService {
     private final EpicRepository epicRepo;
     private final SubtaskRepository subtaskRepo;
     private final IdGenerator idGenerator;
-    private final HistoryService<Task> historyService;
+    private final History<Task> historyService;
 
     public AbstractSubtaskService(
             EpicRepository epicRepository,
             SubtaskRepository subtaskRepository,
             IdGenerator idGenerator,
-            HistoryService<Task> historyService
+            History<Task> historyService
     ) {
         this.epicRepo = epicRepository;
         this.subtaskRepo = subtaskRepository;

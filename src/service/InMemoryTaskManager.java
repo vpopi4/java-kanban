@@ -15,6 +15,7 @@ import repository.InMemoryTaskRepository;
 import service.epicService.InMemoryEpicService;
 import service.subtaskService.InMemorySubtaskService;
 import service.taskService.InMemoryTaskService;
+import util.History;
 import util.IdGenerator;
 
 public class InMemoryTaskManager {
@@ -26,11 +27,11 @@ public class InMemoryTaskManager {
     private final EpicService epicService;
     private final SubtaskService subtaskService;
 
-    private final HistoryService<Task> historyService;
+    private final History<Task> historyService;
 
     public InMemoryTaskManager() {
         IdGenerator idGenerator = new IdGenerator();
-        historyService = new HistoryService<>();
+        historyService = new History<>();
 
         taskRepository = new InMemoryTaskRepository();
         epicRepository = new InMemoryEpicRepository();
