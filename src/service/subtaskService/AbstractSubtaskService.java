@@ -10,7 +10,6 @@ import interfaces.repository.SubtaskRepository;
 import interfaces.service.SubtaskService;
 import model.Epic;
 import model.Subtask;
-import model.Task;
 import util.IdGenerator;
 import util.TaskManagerConfig;
 
@@ -18,7 +17,7 @@ public abstract class AbstractSubtaskService implements SubtaskService {
     private final EpicRepository epicRepo;
     private final SubtaskRepository subtaskRepo;
     private final IdGenerator idGenerator;
-    private final HistoryManager<Task> historyManager;
+    private final HistoryManager historyManager;
 
     public AbstractSubtaskService(TaskManagerConfig config) {
         this.epicRepo = config.getEpicRepository();

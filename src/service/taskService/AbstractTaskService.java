@@ -13,7 +13,7 @@ import java.util.ArrayList;
 public abstract class AbstractTaskService implements TaskService {
     private final TaskRepository repository;
     private final IdGenerator idGenerator;
-    private final HistoryManager<Task> historyManager;
+    private final HistoryManager historyManager;
 
     public AbstractTaskService(TaskManagerConfig config) {
         this.repository = config.getTaskRepository();

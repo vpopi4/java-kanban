@@ -4,21 +4,20 @@ import interfaces.HistoryManager;
 import interfaces.repository.EpicRepository;
 import interfaces.repository.SubtaskRepository;
 import interfaces.repository.TaskRepository;
-import model.Task;
 
 public class TaskManagerConfig {
     private TaskRepository taskRepository;
     private EpicRepository epicRepository;
     private SubtaskRepository subtaskRepository;
     private IdGenerator idGenerator;
-    private HistoryManager<Task> historyManager;
+    private HistoryManager historyManager;
 
     public TaskManagerConfig(
             TaskRepository taskRepository,
             EpicRepository epicRepository,
             SubtaskRepository subtaskRepository,
             IdGenerator idGenerator,
-            HistoryManager<Task> historyManager
+            HistoryManager historyManager
     ) {
         this.taskRepository = taskRepository;
         this.epicRepository = epicRepository;
@@ -43,7 +42,7 @@ public class TaskManagerConfig {
         return idGenerator;
     }
 
-    public HistoryManager<Task> getHistoryManager() {
+    public HistoryManager getHistoryManager() {
         return historyManager;
     }
 }

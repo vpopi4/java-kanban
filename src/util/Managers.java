@@ -5,7 +5,6 @@ import interfaces.TaskManager;
 import interfaces.repository.EpicRepository;
 import interfaces.repository.SubtaskRepository;
 import interfaces.repository.TaskRepository;
-import model.Task;
 import repository.InMemoryEpicRepository;
 import repository.InMemorySubtaskRepository;
 import repository.InMemoryTaskRepository;
@@ -16,7 +15,7 @@ public class Managers {
         return getInMemoryTaskManager();
     }
 
-    public HistoryManager<Task> getDefaultHistory() {
+    public HistoryManager getDefaultHistory() {
         return new InMemoryHistoryManager();
     }
 
@@ -25,7 +24,7 @@ public class Managers {
         EpicRepository epicRepository = new InMemoryEpicRepository();
         SubtaskRepository subtaskRepository = new InMemorySubtaskRepository();
         IdGenerator idGenerator = new IdGenerator();
-        HistoryManager<Task> historyService = new InMemoryHistoryManager();
+        HistoryManager historyService = new InMemoryHistoryManager();
         
         TaskManagerConfig config = new TaskManagerConfig(
             taskRepository,

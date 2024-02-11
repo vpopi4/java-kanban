@@ -4,10 +4,9 @@ import java.util.ArrayList;
 
 import model.Task;
 
-public interface HistoryManager<T extends Task> {
+public interface HistoryManager {
 
-    void add(T item);
-
-    ArrayList<T> getHistory();
+    void add(Task item);
+    ArrayList<Task> getHistory();
 
 }
