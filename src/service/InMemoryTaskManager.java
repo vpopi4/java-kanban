@@ -1,11 +1,14 @@
 package service;
 
+import java.util.ArrayList;
+
 import interfaces.EpicService;
 import interfaces.SubtaskService;
 import interfaces.TaskService;
 import interfaces.repository.EpicRepository;
 import interfaces.repository.SubtaskRepository;
 import interfaces.repository.TaskRepository;
+import model.Task;
 import repository.InMemoryEpicRepository;
 import repository.InMemorySubtaskRepository;
 import repository.InMemoryTaskRepository;
@@ -22,17 +25,33 @@ public class InMemoryTaskManager {
     private final EpicService epicService;
     private final SubtaskService subtaskService;
 
+    private final HistoryService<Task> historyService;
+
     public InMemoryTaskManager() {
         IdGenerator idGenerator = new IdGenerator();
+        historyService = new HistoryService<>();
 
         taskRepository = new InMemoryTaskRepository();
         epicRepository = new InMemoryEpicRepository();
         subtaskRepository = new InMemorySubtaskRepository();
 
-        taskService = new InMemoryTaskService(taskRepository, idGenerator);
-        epicService = new InMemoryEpicService(epicRepository, subtaskRepository, idGenerator);
-        subtaskService = new InMemorySubtaskService(epicRepository, subtaskRepository, idGenerator);
-        
+        taskService = new InMemoryTaskService(
+                taskRepository,
+                idGenerator,
+                historyService
+        );
+        epicService = new InMemoryEpicService(
+                epicRepository,
+                subtaskRepository,
+                idGenerator,
+                historyService
+        );
+        subtaskService = new InMemorySubtaskService(
+                epicRepository,
+                subtaskRepository,
+                idGenerator,
+                historyService
+        );
     }
 
     public TaskService getTaskService() {
@@ -42,8 +61,12 @@ public class InMemoryTaskManager {
     public EpicService getEpicService() {
         return epicService;
     }
-    
+
     public SubtaskService getSubtaskService() {
         return subtaskService;
+    }
+
+    public ArrayList<Task> getHistory() {
+        return historyService.getHistory();
     }
 }

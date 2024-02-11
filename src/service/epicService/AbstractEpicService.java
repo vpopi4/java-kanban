@@ -9,20 +9,25 @@ import interfaces.repository.EpicRepository;
 import interfaces.repository.SubtaskRepository;
 import model.Epic;
 import model.Subtask;
+import model.Task;
+import service.HistoryService;
 import service.IdGenerator;
 
 public abstract class AbstractEpicService implements EpicService {
     private final EpicRepository epicRepo;
     private final SubtaskRepository subtaskRepo;
     private final IdGenerator idGenerator;
+    private final HistoryService<Task> historyService;
 
     public AbstractEpicService(
             EpicRepository epicRepository,
             SubtaskRepository subtaskRepository,
-            IdGenerator idGenerator) {
+            IdGenerator idGenerator,
+            HistoryService<Task> historyService) {
         this.epicRepo = epicRepository;
         this.subtaskRepo = subtaskRepository;
         this.idGenerator = idGenerator;
+        this.historyService = historyService;
     }
 
     @Override
@@ -34,7 +39,9 @@ public abstract class AbstractEpicService implements EpicService {
 
     @Override
     public Epic get(Integer id) {
-        return epicRepo.get(id);
+        Epic epic = epicRepo.get(id);
+        historyService.add(epic);
+        return epic;
     }
 
     @Override
