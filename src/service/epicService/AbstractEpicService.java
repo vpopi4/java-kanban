@@ -11,7 +11,7 @@ import model.Epic;
 import model.Subtask;
 import model.Task;
 import service.HistoryService;
-import service.IdGenerator;
+import util.IdGenerator;
 
 public abstract class AbstractEpicService implements EpicService {
     private final EpicRepository epicRepo;

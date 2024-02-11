@@ -4,7 +4,7 @@ import interfaces.repository.EpicRepository;
 import interfaces.repository.SubtaskRepository;
 import model.Task;
 import service.HistoryService;
-import service.IdGenerator;
+import util.IdGenerator;
 
 public class InMemoryEpicService extends AbstractEpicService {
     public InMemoryEpicService(

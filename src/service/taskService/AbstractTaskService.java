@@ -5,7 +5,7 @@ import interfaces.repository.TaskRepository;
 import interfaces.TaskService;
 import model.Task;
 import service.HistoryService;
-import service.IdGenerator;
+import util.IdGenerator;
 
 import java.util.ArrayList;
 

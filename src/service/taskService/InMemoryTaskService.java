@@ -3,7 +3,7 @@ package service.taskService;
 import interfaces.repository.TaskRepository;
 import model.Task;
 import service.HistoryService;
-import service.IdGenerator;
+import util.IdGenerator;
 
 public class InMemoryTaskService extends AbstractTaskService {
     public InMemoryTaskService(
