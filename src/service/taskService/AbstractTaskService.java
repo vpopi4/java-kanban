@@ -1,9 +1,10 @@
-package service;
+package service.taskService;
 
 import dtos.TaskCreationData;
 import interfaces.repository.TaskRepository;
 import interfaces.TaskService;
 import model.Task;
+import service.IdGenerator;
 
 import java.util.ArrayList;
 
@@ -20,9 +21,7 @@ public abstract class AbstractTaskService implements TaskService {
     public Task create(TaskCreationData data) {
         Task task = new Task(idGenerator.generateNewId(), data);
 
-        repository.create(task);
-
-        return task;
+        return repository.create(task);
     }
 
     @Override
