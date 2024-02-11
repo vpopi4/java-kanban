@@ -6,7 +6,7 @@ import dtos.TaskCreationData;
 import model.Subtask;
 
 public interface SubtaskService {
-    Subtask create(TaskCreationData data);
+    Subtask create( TaskCreationData data, Integer epicId);
 
     Subtask get(Integer id);
     ArrayList<Subtask> getAll();
