@@ -6,11 +6,11 @@ import interfaces.repository.SubtaskRepository;
 import interfaces.repository.TaskRepository;
 
 public class TaskManagerConfig {
-    private TaskRepository taskRepository;
-    private EpicRepository epicRepository;
-    private SubtaskRepository subtaskRepository;
-    private IdGenerator idGenerator;
-    private HistoryManager historyManager;
+    private final TaskRepository taskRepository;
+    private final EpicRepository epicRepository;
+    private final SubtaskRepository subtaskRepository;
+    private final IdGenerator idGenerator;
+    private final HistoryManager historyManager;
 
     public TaskManagerConfig(
             TaskRepository taskRepository,
