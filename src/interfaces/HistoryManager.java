@@ -1,12 +1,12 @@
 package interfaces;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import model.Task;
 
 public interface HistoryManager {
 
     void add(Task item);
-    ArrayList<Task> getHistory();
+    List<Task> getHistory();
 
 }

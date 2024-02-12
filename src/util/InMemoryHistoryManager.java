@@ -1,16 +1,17 @@
 package util;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 import interfaces.HistoryManager;
 import model.Task;
 
 public class InMemoryHistoryManager implements HistoryManager {
-    private final ArrayList<Task> list;
+    private final LinkedList<Task> list;
     private static final int MAX_SIZE = 10;
 
     public InMemoryHistoryManager() {
-        list = new ArrayList<>(MAX_SIZE);
+        list = new LinkedList<>();
     }
 
     @Override
@@ -20,14 +21,14 @@ public class InMemoryHistoryManager implements HistoryManager {
         }
 
         if (item == null) {
-            throw new IllegalArgumentException("unexpected null");
+            return;
         }
 
         list.add(item);
     }
 
     @Override
-    public ArrayList<Task> getHistory() {
+    public List<Task> getHistory() {
         return list;
     }
 }

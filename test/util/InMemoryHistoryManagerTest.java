@@ -7,7 +7,7 @@ import model.TaskCreationData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -78,22 +78,16 @@ class InMemoryHistoryManagerTest {
 
     @Test
     public void shouldReturnEmptyListWhenNoItemHaveBeenAddedYet() {
-        ArrayList<Task> list = manager.getHistory();
+        List<Task> list = manager.getHistory();
 
         assertTrue(list.isEmpty());
     }
 
     @Test
-    public void shouldThrowIllegalArgumentExceptionWhenPassedNull() {
-        IllegalArgumentException exception = null;
+    public void shouldDoesNotSaveWhenPassedNull() {
+        manager.add(null);
+        List<Task> actual = manager.getHistory();
 
-        try {
-            manager.add(null);
-        } catch (IllegalArgumentException e) {
-            exception = e;
-        }
-
-        assertNotNull(exception);
-        assertInstanceOf(IllegalArgumentException.class, exception);
+        assertTrue(actual.isEmpty());
     }
 }

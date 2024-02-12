@@ -1,6 +1,6 @@
 package interfaces;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import interfaces.service.EpicService;
 import interfaces.service.SubtaskService;
@@ -15,6 +15,6 @@ public interface TaskManager {
 
     SubtaskService getSubtaskService();
 
-    ArrayList<Task> getHistory();
+    List<Task> getHistory();
 
 }
