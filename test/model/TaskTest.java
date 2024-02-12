@@ -1,8 +1,8 @@
 package model;
 
-import dtos.TaskCreationData;
-import enums.TaskStatus;
 import org.junit.jupiter.api.Test;
+
+import util.TaskStatus;
 
 import static org.junit.jupiter.api.Assertions.*;
 

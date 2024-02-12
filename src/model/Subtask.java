@@ -1,7 +1,5 @@
 package model;
 
-import dtos.TaskCreationData;
-
 public class Subtask extends Task {
     private Epic epic;
 

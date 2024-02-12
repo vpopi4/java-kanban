@@ -2,14 +2,14 @@ package service.epicService;
 
 import java.util.ArrayList;
 
-import dtos.EpicUpdationData;
-import dtos.TaskCreationData;
 import interfaces.HistoryManager;
 import interfaces.repository.EpicRepository;
 import interfaces.repository.SubtaskRepository;
 import interfaces.service.EpicService;
 import model.Epic;
+import model.EpicUpdationData;
 import model.Subtask;
+import model.TaskCreationData;
 import util.IdGenerator;
 import util.TaskManagerConfig;
 

@@ -1,7 +1,8 @@
 package repository;
 
-import dtos.TaskCreationData;
 import model.Task;
+import model.TaskCreationData;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

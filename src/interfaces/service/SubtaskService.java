@@ -2,8 +2,8 @@ package interfaces.service;
 
 import java.util.ArrayList;
 
-import dtos.TaskCreationData;
 import model.Subtask;
+import model.TaskCreationData;
 
 public interface SubtaskService {
     Subtask create( TaskCreationData data, Integer epicId);

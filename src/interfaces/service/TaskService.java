@@ -2,8 +2,8 @@ package interfaces.service;
 
 import java.util.ArrayList;
 
-import dtos.TaskCreationData;
 import model.Task;
+import model.TaskCreationData;
 
 public interface TaskService {
     Task create(TaskCreationData dto);

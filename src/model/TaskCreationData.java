@@ -1,6 +1,6 @@
-package dtos;
+package model;
 
-import enums.TaskStatus;
+import util.TaskStatus;
 
 public class TaskCreationData {
     private String name;

@@ -1,6 +1,4 @@
-package dtos;
-
-import model.Epic;
+package model;
 
 public class EpicUpdationData {
     private Integer id;
