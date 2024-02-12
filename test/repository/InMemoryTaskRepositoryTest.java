@@ -1,7 +1,8 @@
 package repository;
 
-import dtos.TaskCreationData;
 import model.Task;
+import model.TaskCreationData;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -30,6 +31,22 @@ class InMemoryTaskRepositoryTest {
         Task task = createTask(0);
         Task createdTask = repository.create(task);
         assertEquals(task, createdTask);
+    }
+
+    @Test
+    public void shouldHandleTasksWithSameId() {
+        Task task1 = createTask(0);
+        Task task2 = new Task(0, new TaskCreationData(
+                "Task#0.1",
+                "lorem ipsum dollar"
+        ));
+        repository.create(task1);
+        repository.create(task2);
+
+        ArrayList<Task> allTasks = repository.getAll();
+
+        assertEquals(1, allTasks.size());
+        assertTrue(allTasks.contains(task2));
     }
 
     @Test

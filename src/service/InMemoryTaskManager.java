@@ -1,6 +1,6 @@
 package service;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import interfaces.TaskManager;
 import interfaces.service.EpicService;
@@ -41,7 +41,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public ArrayList<Task> getHistory() {
+    public List<Task> getHistory() {
         return config.getHistoryManager().getHistory();
     }
 }

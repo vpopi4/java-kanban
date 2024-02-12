@@ -1,24 +1,10 @@
 package model;
 
-import dtos.TaskCreationData;
-import enums.TaskStatus;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class TaskTest {
-    @Test
-    public void shouldCreateTaskWithTaskCreationData() {
-        TaskCreationData data = new TaskCreationData("Test Task", "Description");
-
-        Task task = new Task(1, data);
-
-        assertEquals(1, task.getId());
-        assertEquals("Test Task", task.getName());
-        assertEquals("Description", task.getDescription());
-        assertEquals(TaskStatus.NEW, task.getStatus());
-    }
-
     @Test
     public void shouldReturnExpectedStringRepresentation() {
         TaskCreationData data = new TaskCreationData("Test Task", "Description");

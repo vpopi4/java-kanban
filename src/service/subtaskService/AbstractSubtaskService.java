@@ -2,16 +2,16 @@ package service.subtaskService;
 
 import java.util.ArrayList;
 
-import dtos.TaskCreationData;
-import enums.TaskStatus;
 import interfaces.HistoryManager;
 import interfaces.repository.EpicRepository;
 import interfaces.repository.SubtaskRepository;
 import interfaces.service.SubtaskService;
 import model.Epic;
 import model.Subtask;
+import model.TaskCreationData;
 import util.IdGenerator;
 import util.TaskManagerConfig;
+import util.TaskStatus;
 
 public abstract class AbstractSubtaskService implements SubtaskService {
     private final EpicRepository epicRepo;

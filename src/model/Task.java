@@ -1,9 +1,8 @@
 package model;
 
-import dtos.TaskCreationData;
-import enums.TaskStatus;
-
 import java.util.Objects;
+
+import util.TaskStatus;
 
 public class Task {
     protected int id;
