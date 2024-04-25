@@ -28,66 +28,39 @@ class InMemoryHistoryManagerTest {
 
     @Test
     public void shouldSaveTask() {
+        // Given
         Task expected = createTask(0);
 
+        // When
         manager.add(expected);
 
+        // Then
         Task actual = manager.getHistory().get(0);
-
-        assertEquals(expected, actual);
-    }
-
-    @Test
-    public void shouldRemoveFirstItemIfLastItemAddedIsEleventh() {
-        Task expected = createTask(1);
-
-        for (int i = 0; i < 11; i++) {
-            manager.add(createTask(i));
-        }
-
-        Task actual = manager.getHistory().get(0);
-
-        assertEquals(expected, actual);
-    }
-
-    @Test
-    public void shouldReturnListWithSizeEqualTo10WhenAdding11Items() {
-        int expected = 10;
-
-        for (int i = 0; i < 11; i++) {
-            manager.add(createTask(i));
-        }
-
-        int actual = manager.getHistory().size();
-
-        assertEquals(expected, actual);
-    }
-
-    @Test
-    public void shouldReturnListWithSizeEqualTo10WhenAdding100Items() {
-        int expected = 10;
-
-        for (int i = 0; i < 100; i++) {
-            manager.add(createTask(i));
-        }
-
-        int actual = manager.getHistory().size();
-
         assertEquals(expected, actual);
     }
 
     @Test
     public void shouldReturnEmptyListWhenNoItemHaveBeenAddedYet() {
+        // Given
         List<Task> list = manager.getHistory();
 
+        // When
+        // Nothing
+
+        // Then
         assertTrue(list.isEmpty());
     }
 
     @Test
     public void shouldDoesNotSaveWhenPassedNull() {
-        manager.add(null);
-        List<Task> actual = manager.getHistory();
+        // Given
+        Task task = null;
 
+        // When
+        manager.add(task);
+
+        // Then
+        List<Task> actual = manager.getHistory();
         assertTrue(actual.isEmpty());
     }
 }

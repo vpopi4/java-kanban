@@ -1,5 +1,6 @@
 package util;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -7,24 +8,29 @@ import interfaces.HistoryManager;
 import model.Task;
 
 public class InMemoryHistoryManager implements HistoryManager {
-    private final LinkedList<Task> list;
-    private static final int MAX_SIZE = 10;
+    private final HashMap<Integer, DoublyLinkedList.Node<Task>> map;
+    private final DoublyLinkedList<Task> list;
 
     public InMemoryHistoryManager() {
-        list = new LinkedList<>();
+        list = new DoublyLinkedList<>();
+        map = new HashMap<>();
     }
 
     @Override
     public void add(Task item) {
-        if (list.size() >= MAX_SIZE) {
-            list.remove(0);
-        }
-
         if (item == null) {
             return;
         }
 
-        list.add(item);
+        int id = item.getId();
+
+        if (map.containsKey(id)) {
+            var node = map.get(id);
+            list.removeNode(node);
+        }
+
+        list.addLast(item);
+        map.put(id, list.tail);
     }
 
     @Override
@@ -34,6 +40,6 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     @Override
     public List<Task> getHistory() {
-        return list;
+        return list.getValues();
     }
 }
