@@ -3,8 +3,8 @@ package util;
 import java.util.ArrayList;
 
 public class DoublyLinkedList<T> {
-    private Node<T> head;
-    private Node<T> tail;
+    public Node<T> head;
+    public Node<T> tail;
     private int size;
 
     public DoublyLinkedList() {
@@ -37,6 +37,26 @@ public class DoublyLinkedList<T> {
         }
 
         return list;
+    }
+
+    public void removeNode(Node<T> node) {
+        if (node == null) {
+            return;
+        }
+
+        if (node.prev == null) {
+            head = node.next;
+        } else {
+            node.prev.next = node.next;
+        }
+
+        if (node.next == null) {
+            tail = node.prev;
+        } else {
+            node.next.prev = node.prev;
+        }
+
+        size--;
     }
 
     static class Node<T> {

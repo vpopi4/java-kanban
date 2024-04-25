@@ -76,4 +76,40 @@ class DoublyLinkedListTest {
         assertEquals("second", values.get(1));
         assertEquals("third", values.get(2));
     }
+
+    @Test
+    void shouldRemoveNodeFromList() {
+        // Given
+        list.addLast(1);
+        list.addLast(2);
+        list.addLast(3);
+        ArrayList<Integer> values;
+
+        // When
+        // Удаляем второй узел
+        list.removeNode(list.head.next);
+
+        // Then
+        values = list.getValues();
+        assertEquals(2, values.size());
+        assertEquals(1, values.get(0));
+        assertEquals(3, values.get(1));
+
+        // When
+        // Удаляем первый узел
+        list.removeNode(list.head);
+
+        // Then
+        values = list.getValues();
+        assertEquals(1, values.size());
+        assertEquals(3, values.get(0));
+
+        // When
+        // Удаляем последний узел
+        list.removeNode(list.head);
+
+        // Then
+        values = list.getValues();
+        assertTrue(values.isEmpty());
+    }
 }
