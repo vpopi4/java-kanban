@@ -5,8 +5,8 @@ import java.util.ArrayList;
 public class Epic extends Task {
     private final ArrayList<Subtask> subtasks;
 
-    public Epic(int id, TaskCreationData dto) {
-        super(id, dto);
+    public Epic(int id, EpicCreationData dto) {
+        super(id, dto.getName(), dto.getDescription());
         subtasks = new ArrayList<>();
     }
 
@@ -32,7 +32,7 @@ public class Epic extends Task {
     private ArrayList<Integer> getSubtaskIDs() {
         var list = new ArrayList<Integer>();
 
-        for (Subtask subtask: subtasks) {
+        for (Subtask subtask : subtasks) {
             list.add(subtask.getId());
         }
 

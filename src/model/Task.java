@@ -17,6 +17,13 @@ public class Task {
         this.status = dto.getStatus();
     }
 
+    public Task(int id, String name, String description) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.status = TaskStatus.NEW;
+    }
+
     public int getId() {
         return id;
     }

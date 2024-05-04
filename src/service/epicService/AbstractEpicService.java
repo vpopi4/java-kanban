@@ -6,12 +6,10 @@ import interfaces.HistoryManager;
 import interfaces.repository.EpicRepository;
 import interfaces.repository.SubtaskRepository;
 import interfaces.service.EpicService;
-import model.Epic;
-import model.EpicUpdationData;
-import model.Subtask;
-import model.TaskCreationData;
+import model.*;
 import util.IdGenerator;
 import util.TaskManagerConfig;
+import util.TaskStatus;
 
 public abstract class AbstractEpicService implements EpicService {
     private final EpicRepository epicRepo;
@@ -27,8 +25,9 @@ public abstract class AbstractEpicService implements EpicService {
     }
 
     @Override
-    public Epic create(TaskCreationData data) {
+    public Epic create(EpicCreationData data) {
         Epic epic = new Epic(idGenerator.generateNewId(), data);
+        epic.setStatus(TaskStatus.NEW);
 
         return epicRepo.create(epic);
     }
