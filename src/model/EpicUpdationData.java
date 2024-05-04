@@ -11,6 +11,16 @@ public class EpicUpdationData {
         this.description = epic.getDescription();
     }
 
+    public EpicUpdationData(Integer id, String name, String description) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+    }
+
+    public EpicUpdationData(Integer id) {
+        this.id = id;
+    }
+
     public Integer getId() {
         return id;
     }
