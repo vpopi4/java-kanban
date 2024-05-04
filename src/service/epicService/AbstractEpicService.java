@@ -26,7 +26,8 @@ public abstract class AbstractEpicService implements EpicService {
 
     @Override
     public Epic create(EpicCreationData data) {
-        Epic epic = new Epic(idGenerator.generateNewId(), data);
+        Integer id = idGenerator.generateNewId();
+        Epic epic = new Epic(id, data);
         epic.setStatus(TaskStatus.NEW);
 
         return epicRepo.create(epic);
