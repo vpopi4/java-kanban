@@ -6,31 +6,31 @@ import model.Task;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public abstract class AbstractInMemoryRepository<Entity extends Task> implements Repository<Entity, Integer> {
-    private HashMap<Integer, Entity> store;
+public abstract class AbstractInMemoryRepository<E extends Task> implements Repository<E, Integer> {
+    private HashMap<Integer, E> store;
 
     public AbstractInMemoryRepository() {
         store = new HashMap<>();
     }
 
     @Override
-    public Entity create(Entity entity) {
+    public E create(E entity) {
         store.put(entity.getId(), entity);
         return entity;
     }
 
     @Override
-    public Entity get(Integer id) {
+    public E get(Integer id) {
         return store.get(id);
     }
 
     @Override
-    public ArrayList<Entity> getAll() {
+    public ArrayList<E> getAll() {
         return new ArrayList<>(store.values());
     }
 
     @Override
-    public Entity update(Entity entity) {
+    public E update(E entity) {
         store.put(entity.getId(), entity);
         return entity;
     }
