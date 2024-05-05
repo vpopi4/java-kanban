@@ -2,16 +2,16 @@ package interfaces.repository;
 
 import java.util.ArrayList;
 
-public interface Repository<Entity, IDType> {
-    Entity create(Entity entity);
+public interface Repository<E, I> {
+    E create(E entity);
 
-    Entity get(IDType id);
+    E get(I id);
 
-    ArrayList<Entity> getAll();
+    ArrayList<E> getAll();
 
-    Entity update(Entity entity);
+    E update(E entity);
 
-    void remove(IDType id);
+    void remove(I id);
 
     void removeAll();
 }
