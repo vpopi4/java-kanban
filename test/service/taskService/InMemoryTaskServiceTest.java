@@ -1,22 +1,20 @@
 package service.taskService;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import interfaces.HistoryManager;
+import interfaces.service.TaskService;
 import model.Task;
 import model.TaskCreationData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import interfaces.service.TaskService;
 import repository.InMemoryTaskRepository;
-import service.taskService.InMemoryTaskService;
 import util.IdGenerator;
 import util.InMemoryHistoryManager;
 import util.TaskManagerConfig;
 import util.TaskStatus;
 
 import java.util.ArrayList;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class InMemoryTaskServiceTest {
     TaskService taskService;

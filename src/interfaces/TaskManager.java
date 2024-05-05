@@ -1,11 +1,11 @@
 package interfaces;
 
-import java.util.List;
-
 import interfaces.service.EpicService;
 import interfaces.service.SubtaskService;
 import interfaces.service.TaskService;
 import model.Task;
+
+import java.util.List;
 
 public interface TaskManager {
 

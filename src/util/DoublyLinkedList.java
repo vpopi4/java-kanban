@@ -31,7 +31,7 @@ public class DoublyLinkedList<T> {
 
         Node<T> current = head;
 
-        while(current != null) {
+        while (current != null) {
             list.add(current.value);
             current = current.next;
         }

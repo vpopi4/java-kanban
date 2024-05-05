@@ -4,7 +4,7 @@ public class EpicUpdationData {
     private Integer id;
     private String name;
     private String description;
-    
+
     public EpicUpdationData(Epic epic) {
         this.id = epic.getId();
         this.name = epic.getName();

@@ -1,7 +1,5 @@
 package model;
 
-import util.TaskStatus;
-
 public class EpicCreationData {
     private String name;
     private String description;

@@ -1,15 +1,18 @@
 package service.epicService;
 
-import java.util.ArrayList;
-
 import interfaces.HistoryManager;
 import interfaces.repository.EpicRepository;
 import interfaces.repository.SubtaskRepository;
 import interfaces.service.EpicService;
-import model.*;
+import model.Epic;
+import model.EpicCreationData;
+import model.EpicUpdationData;
+import model.Subtask;
 import util.IdGenerator;
 import util.TaskManagerConfig;
 import util.TaskStatus;
+
+import java.util.ArrayList;
 
 public abstract class AbstractEpicService implements EpicService {
     private final EpicRepository epicRepo;

@@ -1,7 +1,5 @@
 package service.subtaskService;
 
-import java.util.ArrayList;
-
 import interfaces.HistoryManager;
 import interfaces.repository.EpicRepository;
 import interfaces.repository.SubtaskRepository;
@@ -12,6 +10,8 @@ import model.TaskCreationData;
 import util.IdGenerator;
 import util.TaskManagerConfig;
 import util.TaskStatus;
+
+import java.util.ArrayList;
 
 public abstract class AbstractSubtaskService implements SubtaskService {
     private final EpicRepository epicRepo;
@@ -30,9 +30,9 @@ public abstract class AbstractSubtaskService implements SubtaskService {
     public Subtask create(TaskCreationData data, Integer epicId) {
         Epic epic = epicRepo.get(epicId);
         Subtask subtask = new Subtask(idGenerator.generateNewId(), data, epic);
-        
+
         epic.addSubtask(subtask);
-           
+
         epicRepo.update(epic);
         return subtaskRepo.create(subtask);
     }
@@ -72,7 +72,7 @@ public abstract class AbstractSubtaskService implements SubtaskService {
 
         epic.getSubtasks().remove(subtask);
         epic.setStatus(calculateStatusOfEpic(epic));
-        
+
         subtaskRepo.remove(id);
         epicRepo.update(epic);
     }

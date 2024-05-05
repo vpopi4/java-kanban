@@ -1,8 +1,8 @@
 package model;
 
-import java.util.Objects;
-
 import util.TaskStatus;
+
+import java.util.Objects;
 
 public class Task {
     protected int id;

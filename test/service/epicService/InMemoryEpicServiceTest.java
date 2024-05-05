@@ -1,13 +1,10 @@
 package service.epicService;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import interfaces.service.EpicService;
 import interfaces.service.SubtaskService;
 import model.Epic;
 import model.EpicCreationData;
 import model.EpicUpdationData;
-import model.TaskCreationData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import repository.InMemoryEpicRepository;
@@ -17,6 +14,8 @@ import util.IdGenerator;
 import util.InMemoryHistoryManager;
 import util.TaskManagerConfig;
 import util.TaskStatus;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 class InMemoryEpicServiceTest {
     EpicService epicService;

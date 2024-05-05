@@ -1,8 +1,8 @@
 package service.taskService;
 
+import interfaces.HistoryManager;
 import interfaces.repository.TaskRepository;
 import interfaces.service.TaskService;
-import interfaces.HistoryManager;
 import model.Task;
 import model.TaskCreationData;
 import util.IdGenerator;
