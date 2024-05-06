@@ -13,6 +13,7 @@ import util.TaskManagerConfig;
 import util.TaskStatus;
 
 import java.util.ArrayList;
+import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -101,16 +102,15 @@ public class InMemoryTaskServiceTest {
         data = null;
 
         // Act
-        boolean actual = false;
-
-        try {
-            taskService.create(data);
-        } catch (NullPointerException e) {
-            actual = true;
-        }
+        task = taskService.create(data);
+        taskFromRepo = taskService.get(1);
 
         // Assert
-        assertTrue(actual);
+        assertInstanceOf(Task.class, task);
+        assertNull(task.getName());
+        assertNull(task.getDescription());
+        assertEquals(TaskStatus.NEW, task.getStatus());
+        assertEquals(task, taskFromRepo);
     }
 
 
@@ -154,11 +154,18 @@ public class InMemoryTaskServiceTest {
 
         // Act
         taskService.remove(task1.getId());
-        Task task1FromRepo = taskService.get(task1.getId());
+
         ArrayList<Task> tasks = taskService.getAll();
 
+        boolean exceptionCatched = false;
+        try {
+            taskService.get(task1.getId());
+        } catch (NoSuchElementException e) {
+            exceptionCatched = true;
+        }
+
         // Assert
-        assertNull(task1FromRepo);
+        assertTrue(exceptionCatched);
         assertTrue(historyManager.getHistory().isEmpty());
         assertEquals(2, tasks.size());
         assertEquals(task0, tasks.get(0));
@@ -167,13 +174,25 @@ public class InMemoryTaskServiceTest {
         // test void removeAll() method
         // Act
         taskService.removeAll();
-        Task task0FromRepo = taskService.get(task0.getId());
-        Task task2FromRepo = taskService.get(task2.getId());
         tasks = taskService.getAll();
 
+        exceptionCatched = false;
+        try {
+            taskService.get(task0.getId());
+        } catch (NoSuchElementException e) {
+            exceptionCatched = true;
+        }
+        assertTrue(exceptionCatched); // Assertion
+
+        exceptionCatched = false;
+        try {
+            taskService.get(task2.getId());
+        } catch (NoSuchElementException e) {
+            exceptionCatched = true;
+        }
+        assertTrue(exceptionCatched); // Assertion
+
         // Assert
-        assertNull(task0FromRepo);
-        assertNull(task2FromRepo);
         assertEquals(0, tasks.size());
 
         // test creating tasks after removing all
