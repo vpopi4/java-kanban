@@ -12,6 +12,7 @@ import util.TaskManagerConfig;
 import util.TaskStatus;
 
 import java.util.ArrayList;
+import java.util.NoSuchElementException;
 
 public abstract class AbstractSubtaskService implements SubtaskService {
     private final EpicRepository epicRepo;
@@ -28,7 +29,16 @@ public abstract class AbstractSubtaskService implements SubtaskService {
 
     @Override
     public Subtask create(TaskCreationData data, Integer epicId) {
+        if (data == null) {
+            data = new TaskCreationData(null, null);
+        }
+
         Epic epic = epicRepo.get(epicId);
+
+        if (epic == null) {
+            throw new NoSuchElementException("such epic not found");
+        }
+
         Subtask subtask = new Subtask(idGenerator.generateNewId(), data, epic);
 
         epic.addSubtask(subtask);
@@ -40,6 +50,11 @@ public abstract class AbstractSubtaskService implements SubtaskService {
     @Override
     public Subtask get(Integer id) {
         Subtask subtask = subtaskRepo.get(id);
+
+        if (subtask == null) {
+            throw new NoSuchElementException("subtask not found");
+        }
+
         historyManager.add(subtask);
         return subtask;
     }
@@ -52,6 +67,10 @@ public abstract class AbstractSubtaskService implements SubtaskService {
     @Override
     public Subtask update(Subtask subtask) {
         Subtask savesSubtask = subtaskRepo.get(subtask.getId());
+
+        if (savesSubtask == null) {
+            throw new NoSuchElementException("subtask not found");
+        }
 
         savesSubtask.setName(subtask.getName());
         savesSubtask.setDescription(subtask.getDescription());
@@ -68,6 +87,11 @@ public abstract class AbstractSubtaskService implements SubtaskService {
     @Override
     public void remove(Integer id) {
         Subtask subtask = subtaskRepo.get(id);
+
+        if (subtask == null) {
+            return;
+        }
+
         Epic epic = subtask.getEpic();
 
         epic.getSubtasks().remove(subtask);

@@ -9,6 +9,7 @@ import util.IdGenerator;
 import util.TaskManagerConfig;
 
 import java.util.ArrayList;
+import java.util.NoSuchElementException;
 
 public abstract class AbstractTaskService implements TaskService {
     private final TaskRepository repository;
@@ -23,6 +24,10 @@ public abstract class AbstractTaskService implements TaskService {
 
     @Override
     public Task create(TaskCreationData data) {
+        if (data == null) {
+            data = new TaskCreationData(null, null);
+        }
+
         Integer id = idGenerator.generateNewId();
         Task task = new Task(id, data);
 
@@ -32,6 +37,11 @@ public abstract class AbstractTaskService implements TaskService {
     @Override
     public Task get(Integer id) {
         Task task = repository.get(id);
+
+        if (task == null) {
+            throw new NoSuchElementException("task not found");
+        }
+
         historyManager.add(task);
         return task;
     }
@@ -43,7 +53,15 @@ public abstract class AbstractTaskService implements TaskService {
 
     @Override
     public Task update(Task task) {
+        if (task == null) {
+            throw new IllegalArgumentException();
+        }
+
         Task savedTask = repository.get(task.getId());
+
+        if (savedTask == null) {
+            throw new NoSuchElementException("task not found");
+        }
 
         savedTask.setName(task.getName());
         savedTask.setDescription(task.getDescription());
