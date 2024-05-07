@@ -3,8 +3,8 @@ package service.epicService;
 import interfaces.service.EpicService;
 import interfaces.service.SubtaskService;
 import model.Epic;
-import model.EpicCreationData;
 import model.EpicUpdationData;
+import model.TaskCreationData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import repository.InMemoryEpicRepository;
@@ -38,7 +38,7 @@ class InMemoryEpicServiceTest {
     @Test
     public void testCreation() {
         // Arrange
-        EpicCreationData data = new EpicCreationData("name", "Lorem ipsum");
+        TaskCreationData data = new TaskCreationData("name", "Lorem ipsum");
 
         // Act
         Epic epic = epicService.create(data);
@@ -53,7 +53,7 @@ class InMemoryEpicServiceTest {
     @Test
     public void testUpdating() {
         // Arrange
-        Epic epic = epicService.create(new EpicCreationData("name", "lorem ipsum dollar"));
+        Epic epic = epicService.create(new TaskCreationData("name", "lorem ipsum dollar"));
         EpicUpdationData data = new EpicUpdationData(epic);
 
         data.setName("new name");

@@ -3,7 +3,6 @@ package service.subtaskService;
 import interfaces.service.EpicService;
 import interfaces.service.SubtaskService;
 import model.Epic;
-import model.EpicCreationData;
 import model.Subtask;
 import model.TaskCreationData;
 import org.junit.jupiter.api.BeforeEach;
@@ -42,7 +41,7 @@ class InMemorySubtaskServiceTest {
     public void testCreation() {
         // Arrange
         Epic epic0 = epicService.create(
-                new EpicCreationData("epic 0", "learn programming")
+                new TaskCreationData("epic 0", "learn programming")
         );
 
         // Act
@@ -86,7 +85,7 @@ class InMemorySubtaskServiceTest {
     public void testUpdating() {
         // Arrange
         Epic epic0 = epicService.create(
-                new EpicCreationData("epic 0", "learn programming")
+                new TaskCreationData("epic 0", "learn programming")
         );
         Subtask subtask1 = subtaskService.create(
                 new TaskCreationData("task0.1", "learn java syntax"),
@@ -146,7 +145,7 @@ class InMemorySubtaskServiceTest {
     public void testRemoving() {
         // Arrange
         Epic epic0 = epicService.create(
-                new EpicCreationData("epic 0", "learn programming")
+                new TaskCreationData("epic 0", "learn programming")
         );
         Subtask subtask1 = subtaskService.create(
                 new TaskCreationData("task0.1", "learn java syntax"),

@@ -14,7 +14,7 @@ public class Task {
         this.id = id;
         this.name = dto.getName();
         this.description = dto.getDescription();
-        this.status = dto.getStatus();
+        this.status = TaskStatus.NEW;
     }
 
     public Task(int id, String name, String description) {

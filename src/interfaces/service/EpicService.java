@@ -1,14 +1,14 @@
 package interfaces.service;
 
 import model.Epic;
-import model.EpicCreationData;
 import model.EpicUpdationData;
 import model.Subtask;
+import model.TaskCreationData;
 
 import java.util.ArrayList;
 
 public interface EpicService {
-    Epic create(EpicCreationData data);
+    Epic create(TaskCreationData data);
 
     Epic get(Integer id);
 

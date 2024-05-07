@@ -55,10 +55,10 @@ public class InMemoryTaskServiceTest {
         // creating second task
         // Arrange
         data.setName("name1");
-        data.setStatus(TaskStatus.IN_PROGRESS);
 
         // Act
         Task task1 = taskService.create(data);
+        task1.setStatus(TaskStatus.IN_PROGRESS);
 
         // Assertion
         assertEquals(1, task1.getId());

@@ -5,9 +5,9 @@ import interfaces.repository.EpicRepository;
 import interfaces.repository.SubtaskRepository;
 import interfaces.service.EpicService;
 import model.Epic;
-import model.EpicCreationData;
 import model.EpicUpdationData;
 import model.Subtask;
+import model.TaskCreationData;
 import util.IdGenerator;
 import util.TaskManagerConfig;
 import util.TaskStatus;
@@ -29,9 +29,9 @@ public abstract class AbstractEpicService implements EpicService {
     }
 
     @Override
-    public Epic create(EpicCreationData data) {
+    public Epic create(TaskCreationData data) {
         if (data == null) {
-            data = new EpicCreationData(null, null);
+            data = new TaskCreationData(null, null);
         }
 
         Integer id = idGenerator.generateNewId();
