@@ -1,7 +1,6 @@
 package interfaces.service;
 
 import model.Epic;
-import model.EpicUpdationData;
 import model.Subtask;
 import model.TaskCreationData;
 
@@ -14,7 +13,7 @@ public interface EpicService {
 
     ArrayList<Epic> getAll();
 
-    Epic update(EpicUpdationData data);
+    Epic update(Integer id, TaskCreationData data);
 
     void remove(Integer id);
 

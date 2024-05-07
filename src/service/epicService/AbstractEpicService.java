@@ -5,7 +5,6 @@ import interfaces.repository.EpicRepository;
 import interfaces.repository.SubtaskRepository;
 import interfaces.service.EpicService;
 import model.Epic;
-import model.EpicUpdationData;
 import model.Subtask;
 import model.TaskCreationData;
 import util.IdGenerator;
@@ -59,12 +58,12 @@ public abstract class AbstractEpicService implements EpicService {
     }
 
     @Override
-    public Epic update(EpicUpdationData data) {
+    public Epic update(Integer id, TaskCreationData data) {
         if (data == null) {
             throw new IllegalArgumentException();
         }
 
-        Epic savedEpic = epicRepo.get(data.getId());
+        Epic savedEpic = epicRepo.get(id);
 
         if (savedEpic == null) {
             throw new NoSuchElementException("epic not found");
