@@ -1,7 +1,5 @@
 package service;
 
-import java.util.List;
-
 import interfaces.TaskManager;
 import interfaces.service.EpicService;
 import interfaces.service.SubtaskService;
@@ -11,6 +9,8 @@ import service.epicService.InMemoryEpicService;
 import service.subtaskService.InMemorySubtaskService;
 import service.taskService.InMemoryTaskService;
 import util.TaskManagerConfig;
+
+import java.util.List;
 
 public class InMemoryTaskManager implements TaskManager {
     private final TaskService taskService;

@@ -25,13 +25,13 @@ public class Managers {
         SubtaskRepository subtaskRepository = new InMemorySubtaskRepository();
         IdGenerator idGenerator = new IdGenerator();
         HistoryManager historyService = new InMemoryHistoryManager();
-        
+
         TaskManagerConfig config = new TaskManagerConfig(
-            taskRepository,
-            epicRepository,
-            subtaskRepository,
-            idGenerator,
-            historyService
+                taskRepository,
+                epicRepository,
+                subtaskRepository,
+                idGenerator,
+                historyService
         );
 
         return new InMemoryTaskManager(config);

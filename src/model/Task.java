@@ -1,8 +1,8 @@
 package model;
 
-import java.util.Objects;
-
 import util.TaskStatus;
+
+import java.util.Objects;
 
 public class Task {
     protected int id;
@@ -14,7 +14,14 @@ public class Task {
         this.id = id;
         this.name = dto.getName();
         this.description = dto.getDescription();
-        this.status = dto.getStatus();
+        this.status = TaskStatus.NEW;
+    }
+
+    public Task(int id, String name, String description) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.status = TaskStatus.NEW;
     }
 
     public int getId() {
