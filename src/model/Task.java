@@ -2,8 +2,7 @@ package model;
 
 import interfaces.model.Taskable;
 import util.TaskStatus;
-
-import java.util.Objects;
+import util.TaskType;
 
 public class Task implements Taskable {
     protected Integer id;
@@ -35,6 +34,12 @@ public class Task implements Taskable {
         return id;
     }
 
+    @Override
+    public TaskType getType() {
+        return TaskType.TASK;
+    }
+
+    @Override
     public String getName() {
         return name;
     }
@@ -63,24 +68,31 @@ public class Task implements Taskable {
 
     @Override
     public String toString() {
-        return "Task{" +
-                "\n\tid=" + id +
-                ",\n\tname='" + name + '\'' +
-                ",\n\tdescription='" + description + '\'' +
-                ",\n\tstatus=" + status +
-                "\n}";
+        // id,type,name,status,description,epic
+        return id + "," +
+                TaskType.TASK + "," +
+                name + "," +
+                status + "," +
+                description + ",\n";
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Task task = (Task) o;
-        return id == task.id && Objects.equals(name, task.name) && Objects.equals(description, task.description) && status == task.status;
-    }
+    public static Task fromString(String string) {
+        String[] record = string.split(",");
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name, description, status);
+        Integer id = Integer.parseInt(record[0]);
+        TaskType type = TaskType.valueOf(record[1]);
+        String name = record[2];
+        TaskStatus status = TaskStatus.valueOf(record[3]);
+        String description = record[4];
+
+        if (type == TaskType.TASK) {
+            Task task = new Task(id);
+            task.setName(name);
+            task.setStatus(status);
+            task.setDescription(description);
+            return task;
+        }
+
+        throw new IllegalArgumentException("record can not be resolved as task");
     }
 }
