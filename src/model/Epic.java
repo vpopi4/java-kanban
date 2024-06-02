@@ -1,6 +1,10 @@
 package model;
 
+import util.TaskStatus;
+import util.TaskType;
+
 import java.util.ArrayList;
+import java.util.List;
 
 public class Epic extends Task {
     private final List<Integer> subtaskIds;
@@ -8,11 +12,6 @@ public class Epic extends Task {
     public Epic(Integer id) {
         super(id);
         subtaskIds = new ArrayList<>();
-    }
-
-    public Epic(int id, TaskCreationData dto) {
-        super(id, dto.getName(), dto.getDescription());
-        subtasks = new ArrayList<>();
     }
 
     @Override

@@ -4,11 +4,10 @@ import interfaces.service.EpicService;
 import interfaces.service.SubtaskService;
 import model.Epic;
 import model.Subtask;
-import model.TaskCreationData;
+import model.Task;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import repository.InMemoryEpicRepository;
-import repository.InMemorySubtaskRepository;
+import repository.InMemoryRepository;
 import service.epicService.InMemoryEpicService;
 import util.IdGenerator;
 import util.InMemoryHistoryManager;
@@ -16,6 +15,7 @@ import util.TaskManagerConfig;
 import util.TaskStatus;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -26,9 +26,7 @@ class InMemorySubtaskServiceTest {
     @BeforeEach
     public void beforeEach() {
         TaskManagerConfig config = new TaskManagerConfig(
-                null,
-                new InMemoryEpicRepository(),
-                new InMemorySubtaskRepository(),
+                new InMemoryRepository(),
                 new IdGenerator(),
                 new InMemoryHistoryManager()
         );
@@ -40,36 +38,31 @@ class InMemorySubtaskServiceTest {
     @Test
     public void testCreation() {
         // Arrange
-        Epic epic0 = epicService.create(
-                new TaskCreationData("epic 0", "learn programming")
-        );
+        Epic epic0 = epicService.create("epic 0", "learn programming");
 
         // Act
         Subtask subtask1 = subtaskService.create(
-                new TaskCreationData("task0.1", "learn java syntax"),
-                epic0.getId()
+                epic0.getId(), "task0.1", "learn java syntax"
         );
         Subtask subtask2 = subtaskService.create(
-                new TaskCreationData("task0.2", "learn git"),
-                epic0.getId()
+                epic0.getId(), "task0.2", "learn git"
         );
         Subtask subtask3 = subtaskService.create(
-                new TaskCreationData("task0.3", "learn unit testing"),
-                epic0.getId()
+                epic0.getId(), "task0.3", "learn unit testing"
         );
-        ArrayList<Subtask> subtasksFromEpic = epic0.getSubtasks();
-        ArrayList<Subtask> subtasksFromRepo = subtaskService.getAll();
+        List<Integer> subtasksFromEpic = epic0.getSubtaskIds();
+        List<Integer> subtasksFromRepo = subtaskService.getAll().stream().map(Task::getId).toList();
 
         // Assert
         assertEquals(3, subtasksFromEpic.size());
         assertEquals(3, subtasksFromRepo.size());
         assertEquals(subtasksFromEpic, subtasksFromRepo);
-        assertEquals(subtask1, subtasksFromRepo.get(0));
-        assertEquals(subtask2, subtasksFromRepo.get(1));
-        assertEquals(subtask3, subtasksFromRepo.get(2));
-        assertEquals(epic0, subtask1.getEpic());
-        assertEquals(epic0, subtask2.getEpic());
-        assertEquals(epic0, subtask3.getEpic());
+        assertEquals(subtask1.getId(), subtasksFromRepo.get(0));
+        assertEquals(subtask2.getId(), subtasksFromRepo.get(1));
+        assertEquals(subtask3.getId(), subtasksFromRepo.get(2));
+        assertEquals(epic0.getId(), subtask1.getEpicId());
+        assertEquals(epic0.getId(), subtask2.getEpicId());
+        assertEquals(epic0.getId(), subtask3.getEpicId());
         assertEquals(0, epic0.getId());
         assertEquals(1, subtask1.getId());
         assertEquals(2, subtask2.getId());
@@ -84,20 +77,15 @@ class InMemorySubtaskServiceTest {
     @Test
     public void testUpdating() {
         // Arrange
-        Epic epic0 = epicService.create(
-                new TaskCreationData("epic 0", "learn programming")
-        );
+        Epic epic0 = epicService.create("epic 0", "learn programming");
         Subtask subtask1 = subtaskService.create(
-                new TaskCreationData("task0.1", "learn java syntax"),
-                epic0.getId()
+                epic0.getId(), "task0.1", "learn java syntax"
         );
         Subtask subtask2 = subtaskService.create(
-                new TaskCreationData("task0.2", "learn git"),
-                epic0.getId()
+                epic0.getId(), "task0.2", "learn git"
         );
         Subtask subtask3 = subtaskService.create(
-                new TaskCreationData("task0.3", "learn unit testing"),
-                epic0.getId()
+                epic0.getId(), "task0.3", "learn unit testing"
         );
 
         // Assert
@@ -144,20 +132,15 @@ class InMemorySubtaskServiceTest {
     @Test
     public void testRemoving() {
         // Arrange
-        Epic epic0 = epicService.create(
-                new TaskCreationData("epic 0", "learn programming")
-        );
+        Epic epic0 = epicService.create("epic 0", "learn programming");
         Subtask subtask1 = subtaskService.create(
-                new TaskCreationData("task0.1", "learn java syntax"),
-                epic0.getId()
+                epic0.getId(), "task0.1", "learn java syntax"
         );
         Subtask subtask2 = subtaskService.create(
-                new TaskCreationData("task0.2", "learn git"),
-                epic0.getId()
+                epic0.getId(), "task0.2", "learn git"
         );
         Subtask subtask3 = subtaskService.create(
-                new TaskCreationData("task0.3", "learn unit testing"),
-                epic0.getId()
+                epic0.getId(), "task0.3", "learn unit testing"
         );
 
         // Assert
@@ -184,7 +167,7 @@ class InMemorySubtaskServiceTest {
         subtaskService.remove(subtask3.getId());
 
         // Assert
-        assertEquals(2, epic0.getSubtasks().size());
+        assertEquals(2, epic0.getSubtaskIds().size());
         assertEquals(2, subtaskService.getAll().size());
         assertEquals(TaskStatus.DONE, epic0.getStatus());
         assertEquals(TaskStatus.DONE, subtask1.getStatus());

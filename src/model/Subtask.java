@@ -16,11 +16,6 @@ public class Subtask extends Task {
         this.epicId = epicId;
     }
 
-    public Subtask(int id, TaskCreationData dto, Epic epic) {
-        super(id, dto);
-        this.epic = epic;
-    }
-
     public Integer getEpicId() {
         return epicId;
     }
@@ -61,5 +56,4 @@ public class Subtask extends Task {
 
         throw new IllegalArgumentException("record can not be resolved as subtask");
     }
-
 }

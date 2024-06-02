@@ -2,7 +2,6 @@ package util;
 
 import interfaces.HistoryManager;
 import model.Task;
-import model.TaskCreationData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -20,10 +19,10 @@ class InMemoryHistoryManagerTest {
     }
 
     private Task createTask(int id) {
-        return new Task(id, new TaskCreationData(
-                "Task#" + id,
-                "lorem ipsum dollar"
-        ));
+        Task task = new Task(id);
+        task.setName("Task#" + id);
+        task.setDescription("lorem ipsum dollar");
+        return task;
     }
 
     @Test

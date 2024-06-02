@@ -143,7 +143,7 @@ public class InMemoryRepository implements Repository {
     public Task update(Task task) throws NoSuchElementException {
         int id = task.getId();
 
-        if (tasks.contains(id) || store.containsKey(id)) {
+        if (!tasks.contains(id) || !store.containsKey(id)) {
             throw new NoSuchElementException("task not found");
         }
 
@@ -156,7 +156,7 @@ public class InMemoryRepository implements Repository {
     public Epic update(Epic epic) throws NoSuchElementException {
         int id = epic.getId();
 
-        if (epics.contains(id) || store.containsKey(id)) {
+        if (!epics.contains(id) || !store.containsKey(id)) {
             throw new NoSuchElementException("epic not found");
         }
 
@@ -169,7 +169,7 @@ public class InMemoryRepository implements Repository {
     public Subtask update(Subtask subtask) throws NoSuchElementException {
         int id = subtask.getId();
 
-        if (epics.contains(id) || store.containsKey(id)) {
+        if (!subtasks.contains(id) || !store.containsKey(id)) {
             throw new NoSuchElementException("subtask not found");
         }
 

@@ -3,11 +3,9 @@ package service.epicService;
 import interfaces.service.EpicService;
 import interfaces.service.SubtaskService;
 import model.Epic;
-import model.TaskCreationData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import repository.InMemoryEpicRepository;
-import repository.InMemorySubtaskRepository;
+import repository.InMemoryRepository;
 import service.subtaskService.InMemorySubtaskService;
 import util.IdGenerator;
 import util.InMemoryHistoryManager;
@@ -23,9 +21,7 @@ class InMemoryEpicServiceTest {
     @BeforeEach
     public void beforeEach() {
         TaskManagerConfig config = new TaskManagerConfig(
-                null,
-                new InMemoryEpicRepository(),
-                new InMemorySubtaskRepository(),
+                new InMemoryRepository(),
                 new IdGenerator(),
                 new InMemoryHistoryManager()
         );
@@ -37,29 +33,29 @@ class InMemoryEpicServiceTest {
     @Test
     public void testCreation() {
         // Arrange
-        TaskCreationData data = new TaskCreationData("name", "Lorem ipsum");
+        String name = "name";
+        String description = "Lorem ipsum";
 
         // Act
-        Epic epic = epicService.create(data);
+        Epic epic = epicService.create(name, description);
 
         // Assert
-        assertEquals(data.getName(), epic.getName());
-        assertEquals(data.getDescription(), epic.getDescription());
+        assertEquals(name, epic.getName());
+        assertEquals(description, epic.getDescription());
         assertEquals(TaskStatus.NEW, epic.getStatus());
-        assertTrue(epic.getSubtasks().isEmpty());
+        assertTrue(epic.getSubtaskIds().isEmpty());
     }
 
     @Test
     public void testUpdating() {
         // Arrange
-        Epic epic = epicService.create(new TaskCreationData("name", "lorem ipsum dollar"));
-        TaskCreationData data = new TaskCreationData(
-                "new name",
-                "some text"
-        );
+        Epic epic = epicService.create("name", "lorem ipsum dollar");
 
         // Act
-        Epic actualEpic = epicService.update(epic.getId(), data);
+        epic.setName("new name");
+        epic.setDescription("some text");
+
+        Epic actualEpic = epicService.update(epic);
 
         // Assert
         assertSame(epic, actualEpic);

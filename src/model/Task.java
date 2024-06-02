@@ -15,13 +15,6 @@ public class Task implements Taskable {
         this.status = TaskStatus.NEW;
     }
 
-    public Task(int id, TaskCreationData dto) {
-        this.id = id;
-        this.name = dto.getName();
-        this.description = dto.getDescription();
-        this.status = TaskStatus.NEW;
-    }
-
     @Override
     public Integer getId() {
         return id;
