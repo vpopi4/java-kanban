@@ -1,73 +1,65 @@
 package service.taskService;
 
 import interfaces.HistoryManager;
-import interfaces.repository.TaskRepository;
+import interfaces.repository.Repository;
 import interfaces.service.TaskService;
 import model.Task;
-import model.TaskCreationData;
 import util.IdGenerator;
 import util.TaskManagerConfig;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 public abstract class AbstractTaskService implements TaskService {
-    private final TaskRepository repository;
+    private final Repository repository;
     private final IdGenerator idGenerator;
     private final HistoryManager historyManager;
 
     public AbstractTaskService(TaskManagerConfig config) {
-        this.repository = config.getTaskRepository();
-        this.idGenerator = config.getIdGenerator();
-        this.historyManager = config.getHistoryManager();
+        this.repository = config.repository();
+        this.idGenerator = config.idGenerator();
+        this.historyManager = config.historyManager();
     }
 
     @Override
-    public Task create(TaskCreationData data) {
-        if (data == null) {
-            data = new TaskCreationData(null, null);
-        }
-
+    public Task create(String name, String description) {
         Integer id = idGenerator.generateNewId();
-        Task task = new Task(id, data);
+        Task task = new Task(id);
+        task.setName(name);
+        task.setDescription(description);
 
         return repository.create(task);
     }
 
     @Override
-    public Task get(Integer id) {
-        Task task = repository.get(id);
+    public Task create(String name) {
+        Integer id = idGenerator.generateNewId();
+        Task task = new Task(id);
+        task.setName(name);
+        task.setDescription("");
 
-        if (task == null) {
-            throw new NoSuchElementException("task not found");
-        }
+        return repository.create(task);
+    }
 
+    @Override
+    public Task get(Integer id) throws NoSuchElementException {
+        Task task = repository.getTaskById(id);
         historyManager.add(task);
         return task;
     }
 
     @Override
-    public ArrayList<Task> getAll() {
-        return repository.getAll();
+    public List<Task> getAll() {
+        return repository.getAllTasks();
     }
 
     @Override
-    public Task update(Task task) {
+    public Task update(Task task) throws NoSuchElementException, IllegalArgumentException {
         if (task == null) {
             throw new IllegalArgumentException();
         }
 
-        Task savedTask = repository.get(task.getId());
-
-        if (savedTask == null) {
-            throw new NoSuchElementException("task not found");
-        }
-
-        savedTask.setName(task.getName());
-        savedTask.setDescription(task.getDescription());
-        savedTask.setStatus(task.getStatus());
-
-        return repository.update(savedTask);
+        return repository.update(task);
     }
 
     @Override
@@ -77,6 +69,6 @@ public abstract class AbstractTaskService implements TaskService {
 
     @Override
     public void removeAll() {
-        repository.removeAll();
+        repository.removeAllTasks();
     }
 }

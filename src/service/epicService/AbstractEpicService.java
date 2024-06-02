@@ -1,109 +1,110 @@
 package service.epicService;
 
 import interfaces.HistoryManager;
-import interfaces.repository.EpicRepository;
-import interfaces.repository.SubtaskRepository;
+import interfaces.repository.Repository;
 import interfaces.service.EpicService;
 import model.Epic;
 import model.Subtask;
-import model.TaskCreationData;
 import util.IdGenerator;
 import util.TaskManagerConfig;
 import util.TaskStatus;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 public abstract class AbstractEpicService implements EpicService {
-    private final EpicRepository epicRepo;
-    private final SubtaskRepository subtaskRepo;
+    private final Repository repository;
     private final IdGenerator idGenerator;
     private final HistoryManager historyManager;
 
     public AbstractEpicService(TaskManagerConfig config) {
-        this.epicRepo = config.getEpicRepository();
-        this.subtaskRepo = config.getSubtaskRepository();
-        this.idGenerator = config.getIdGenerator();
-        this.historyManager = config.getHistoryManager();
+        this.repository = config.repository();
+        this.idGenerator = config.idGenerator();
+        this.historyManager = config.historyManager();
     }
 
     @Override
-    public Epic create(TaskCreationData data) {
-        if (data == null) {
-            data = new TaskCreationData(null, null);
-        }
-
+    public Epic create(String name, String description) {
         Integer id = idGenerator.generateNewId();
-        Epic epic = new Epic(id, data);
+
+        Epic epic = new Epic(id);
+        epic.setName(name);
+        epic.setDescription(description);
         epic.setStatus(TaskStatus.NEW);
 
-        return epicRepo.create(epic);
+        return repository.create(epic);
     }
 
     @Override
-    public Epic get(Integer id) {
-        Epic epic = epicRepo.get(id);
+    public Epic create(String name) {
+        Integer id = idGenerator.generateNewId();
 
-        if (epic == null) {
-            throw new NoSuchElementException("epic not found");
-        }
+        Epic epic = new Epic(id);
+        epic.setName(name);
+        epic.setDescription("");
+        epic.setStatus(TaskStatus.NEW);
+
+        return repository.create(epic);
+    }
+
+    @Override
+    public Epic get(Integer id) throws NoSuchElementException {
+        Epic epic = repository.getEpicById(id);
 
         historyManager.add(epic);
         return epic;
     }
 
     @Override
-    public ArrayList<Epic> getAll() {
-        return epicRepo.getAll();
+    public List<Epic> getAll() {
+        return repository.getAllEpics();
     }
 
     @Override
-    public Epic update(Integer id, TaskCreationData data) {
-        if (data == null) {
+    public Epic update(Epic epic) throws NoSuchElementException, IllegalArgumentException {
+        if (epic == null) {
             throw new IllegalArgumentException();
         }
 
-        Epic savedEpic = epicRepo.get(id);
+        Epic savedEpic = repository.getEpicById(epic.getId());
 
-        if (savedEpic == null) {
-            throw new NoSuchElementException("epic not found");
-        }
+        savedEpic.setName(epic.getName());
+        savedEpic.setDescription(epic.getDescription());
 
-        savedEpic.setName(data.getName());
-        savedEpic.setDescription(data.getDescription());
-
-        return epicRepo.update(savedEpic);
+        return repository.update(savedEpic);
     }
 
     @Override
     public void remove(Integer id) {
-        Epic epic = epicRepo.get(id);
+        try {
+            Epic epic = repository.getEpicById(id);
 
-        if (epic == null) {
-            return;
+            for (Integer subtaskId : epic.getSubtaskIds()) {
+                repository.remove(subtaskId);
+            }
+
+            repository.remove(id);
+        } catch (NoSuchElementException e) {
+            // pass
         }
-
-        for (Subtask subtask : epic.getSubtasks()) {
-            subtaskRepo.remove(subtask.getId());
-        }
-
-        epicRepo.remove(id);
     }
 
     @Override
     public void removeAll() {
-        epicRepo.removeAll();
-        subtaskRepo.removeAll();
+        repository.removeAllEpicsAndSubtasks();
     }
 
     @Override
-    public ArrayList<Subtask> getSubtasks(Integer epicId) {
-        Epic epic = epicRepo.get(epicId);
+    public List<Subtask> getSubtasks(Integer epicId) throws NoSuchElementException {
+        Epic epic = repository.getEpicById(epicId);
 
-        if (epic == null) {
-            throw new NoSuchElementException("epic not found");
+        List<Subtask> list = new ArrayList<>(epic.getSubtaskIds().size());
+
+        for (Integer subtaskId : epic.getSubtaskIds()) {
+            list.add(repository.getSubtaskById(subtaskId));
         }
 
-        return epic.getSubtasks();
+        return list;
     }
 }

@@ -1,18 +1,20 @@
 package interfaces.service;
 
 import model.Subtask;
-import model.TaskCreationData;
 
-import java.util.ArrayList;
+import java.util.List;
+import java.util.NoSuchElementException;
 
 public interface SubtaskService {
-    Subtask create(TaskCreationData data, Integer epicId);
+    Subtask create(Integer epicId, String name, String description);
 
-    Subtask get(Integer id);
+    Subtask create(Integer epicId, String name);
 
-    ArrayList<Subtask> getAll();
+    Subtask get(Integer id) throws NoSuchElementException;
 
-    Subtask update(Subtask subtask);
+    List<Subtask> getAll();
+
+    Subtask update(Subtask subtask) throws NoSuchElementException, IllegalArgumentException;
 
     void remove(Integer id);
 

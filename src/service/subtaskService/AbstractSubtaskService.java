@@ -1,118 +1,110 @@
 package service.subtaskService;
 
 import interfaces.HistoryManager;
-import interfaces.repository.EpicRepository;
-import interfaces.repository.SubtaskRepository;
+import interfaces.repository.Repository;
 import interfaces.service.SubtaskService;
 import model.Epic;
 import model.Subtask;
-import model.TaskCreationData;
 import util.IdGenerator;
 import util.TaskManagerConfig;
 import util.TaskStatus;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 public abstract class AbstractSubtaskService implements SubtaskService {
-    private final EpicRepository epicRepo;
-    private final SubtaskRepository subtaskRepo;
+    private final Repository repository;
     private final IdGenerator idGenerator;
     private final HistoryManager historyManager;
 
     public AbstractSubtaskService(TaskManagerConfig config) {
-        this.epicRepo = config.getEpicRepository();
-        this.subtaskRepo = config.getSubtaskRepository();
-        this.idGenerator = config.getIdGenerator();
-        this.historyManager = config.getHistoryManager();
+        this.repository = config.repository();
+        this.idGenerator = config.idGenerator();
+        this.historyManager = config.historyManager();
     }
 
     @Override
-    public Subtask create(TaskCreationData data, Integer epicId) {
-        if (data == null) {
-            data = new TaskCreationData(null, null);
-        }
+    public Subtask create(Integer epicId, String name, String description) throws NoSuchElementException {
+        Epic epic = repository.getEpicById(epicId);
+        Integer id = idGenerator.generateNewId();
 
-        Epic epic = epicRepo.get(epicId);
+        Subtask subtask = new Subtask(id, epic.getId());
+        subtask.setName(name);
+        subtask.setDescription(description);
 
-        if (epic == null) {
-            throw new NoSuchElementException("such epic not found");
-        }
+        epic.addSubtaskId(id);
 
-        Subtask subtask = new Subtask(idGenerator.generateNewId(), data, epic);
-
-        epic.addSubtask(subtask);
-
-        epicRepo.update(epic);
-        return subtaskRepo.create(subtask);
+        repository.update(epic);
+        return repository.create(subtask);
     }
 
     @Override
-    public Subtask get(Integer id) {
-        Subtask subtask = subtaskRepo.get(id);
+    public Subtask create(Integer epicId, String name) throws NoSuchElementException {
+        Epic epic = repository.getEpicById(epicId);
+        Integer id = idGenerator.generateNewId();
 
-        if (subtask == null) {
-            throw new NoSuchElementException("subtask not found");
-        }
+        Subtask subtask = new Subtask(id, epic.getId());
+        subtask.setName(name);
+        subtask.setDescription("");
+
+        epic.addSubtaskId(id);
+
+        repository.update(epic);
+        return repository.create(subtask);
+    }
+
+    @Override
+    public Subtask get(Integer id) throws NoSuchElementException {
+        Subtask subtask = repository.getSubtaskById(id);
 
         historyManager.add(subtask);
         return subtask;
     }
 
     @Override
-    public ArrayList<Subtask> getAll() {
-        return subtaskRepo.getAll();
+    public List<Subtask> getAll() {
+        return repository.getAllSubtasks();
     }
 
     @Override
-    public Subtask update(Subtask subtask) {
-        Subtask savesSubtask = subtaskRepo.get(subtask.getId());
+    public Subtask update(Subtask subtask) throws NoSuchElementException {
+        Subtask savedSubtask = repository.getSubtaskById(subtask.getId());
+        Epic savedEpic = repository.getEpicById(subtask.getEpicId());
 
-        if (savesSubtask == null) {
-            throw new NoSuchElementException("subtask not found");
-        }
+        savedSubtask.setName(subtask.getName());
+        savedSubtask.setDescription(subtask.getDescription());
+        savedSubtask.setStatus(subtask.getStatus());
 
-        savesSubtask.setName(subtask.getName());
-        savesSubtask.setDescription(subtask.getDescription());
-        savesSubtask.setStatus(subtask.getStatus());
+        savedEpic.setStatus(calculateStatusOfEpic(savedEpic));
 
-        Epic epic = savesSubtask.getEpic();
-
-        epic.setStatus(calculateStatusOfEpic(epic));
-
-        epicRepo.update(epic);
-        return subtaskRepo.update(savesSubtask);
+        repository.update(savedEpic);
+        return repository.update(savedSubtask);
     }
 
     @Override
     public void remove(Integer id) {
-        Subtask subtask = subtaskRepo.get(id);
+        Subtask subtask = repository.getSubtaskById(id);
+        Epic epic = repository.getEpicById(subtask.getEpicId());
 
-        if (subtask == null) {
-            return;
-        }
-
-        Epic epic = subtask.getEpic();
-
-        epic.getSubtasks().remove(subtask);
+        epic.getSubtaskIds().remove(id);
         epic.setStatus(calculateStatusOfEpic(epic));
 
-        subtaskRepo.remove(id);
-        epicRepo.update(epic);
+        repository.update(epic);
+        repository.remove(id);
     }
 
     @Override
     public void removeAll() {
-        subtaskRepo.removeAll();
+        repository.removeAllSubtasks();
 
-        for (Epic epic : epicRepo.getAll()) {
-            epic.getSubtasks().clear();
+        for (Epic epic : repository.getAllEpics()) {
+            epic.getSubtaskIds().clear();
             epic.setStatus(TaskStatus.NEW);
         }
     }
 
     private TaskStatus calculateStatusOfEpic(Epic epic) {
-        int size = epic.getSubtasks().size();
+        int size = epic.getSubtaskIds().size();
 
         if (size == 0) {
             return TaskStatus.NEW;
@@ -121,7 +113,8 @@ public abstract class AbstractSubtaskService implements SubtaskService {
         int countOfNew = 0;
         int countOfDone = 0;
 
-        for (Subtask subtask : epic.getSubtasks()) {
+        for (Integer id : epic.getSubtaskIds()) {
+            Subtask subtask = repository.getSubtaskById(id);
             if (subtask.getStatus() == TaskStatus.NEW) {
                 countOfNew++;
             } else if (subtask.getStatus() == TaskStatus.DONE) {
