@@ -14,7 +14,6 @@ import util.InMemoryHistoryManager;
 import util.TaskManagerConfig;
 import util.TaskStatus;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

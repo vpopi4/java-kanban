@@ -11,7 +11,6 @@ import util.InMemoryHistoryManager;
 import util.TaskManagerConfig;
 import util.TaskStatus;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -38,7 +37,7 @@ public class InMemoryTaskServiceTest {
     public void testCreation_twoTasksCase() {
         // creating first task
         // Act
-        Task task0 = taskService.create("name","lorem ipsum dollar");
+        Task task0 = taskService.create("name", "lorem ipsum dollar");
 
         // Assertion
         assertEquals(0, task0.getId());
@@ -46,7 +45,7 @@ public class InMemoryTaskServiceTest {
 
         // creating second task
         // Act
-        Task task1 = taskService.create("name1","lorem ipsum dollar");
+        Task task1 = taskService.create("name1", "lorem ipsum dollar");
         task1.setStatus(TaskStatus.IN_PROGRESS);
 
         // Assertion

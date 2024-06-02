@@ -215,5 +215,4 @@ public class InMemoryRepository implements Repository {
         }
         subtasks.clear();
     }
-
 }
