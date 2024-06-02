@@ -1,14 +1,20 @@
 package model;
 
+import interfaces.model.Taskable;
 import util.TaskStatus;
 
 import java.util.Objects;
 
-public class Task {
-    protected int id;
+public class Task implements Taskable {
+    protected Integer id;
     protected String name;
     protected String description;
     protected TaskStatus status;
+
+    public Task(Integer id) {
+        this.id = id;
+        this.status = TaskStatus.NEW;
+    }
 
     public Task(int id, TaskCreationData dto) {
         this.id = id;
@@ -24,7 +30,8 @@ public class Task {
         this.status = TaskStatus.NEW;
     }
 
-    public int getId() {
+    @Override
+    public Integer getId() {
         return id;
     }
 
@@ -36,6 +43,7 @@ public class Task {
         this.name = name;
     }
 
+    @Override
     public String getDescription() {
         return description;
     }
@@ -44,6 +52,7 @@ public class Task {
         this.description = description;
     }
 
+    @Override
     public TaskStatus getStatus() {
         return status;
     }
