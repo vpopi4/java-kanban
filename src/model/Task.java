@@ -22,13 +22,6 @@ public class Task implements Taskable {
         this.status = TaskStatus.NEW;
     }
 
-    public Task(int id, String name, String description) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-        this.status = TaskStatus.NEW;
-    }
-
     @Override
     public Integer getId() {
         return id;

@@ -1,17 +1,42 @@
 package interfaces.repository;
 
-import java.util.ArrayList;
+import model.Epic;
+import model.Subtask;
+import model.Task;
 
-public interface Repository<E, I> {
-    E create(E entity);
+import java.util.List;
+import java.util.NoSuchElementException;
 
-    E get(I id);
+public interface Repository {
+    Task create(Task task);
 
-    ArrayList<E> getAll();
+    Epic create(Epic task);
 
-    E update(E entity);
+    Subtask create(Subtask task);
 
-    void remove(I id);
+    Task getTaskById(Integer id) throws NoSuchElementException;
 
-    void removeAll();
+    Epic getEpicById(Integer id) throws NoSuchElementException;
+
+    Subtask getSubtaskById(Integer id) throws NoSuchElementException;
+
+    List<Task> getAllTasks();
+
+    List<Epic> getAllEpics();
+
+    List<Subtask> getAllSubtasks();
+
+    Task update(Task task);
+
+    Epic update(Epic epic);
+
+    Subtask update(Subtask subtask);
+
+    void remove(Integer id);
+
+    void removeAllTasks();
+
+    void removeAllEpicsAndSubtasks();
+
+    void removeAllSubtasks();
 }

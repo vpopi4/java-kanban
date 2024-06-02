@@ -3,7 +3,7 @@ package model;
 import java.util.ArrayList;
 
 public class Epic extends Task {
-    private final ArrayList<Subtask> subtasks;
+    private final List<Integer> subtaskIds;
 
     public Epic(Integer id) {
         super(id);
@@ -20,24 +20,19 @@ public class Epic extends Task {
         return TaskType.EPIC;
     }
 
-    public void addSubtask(Subtask subtask) {
-        subtasks.add(subtask);
+    public void addSubtaskId(Integer id) {
+        subtaskIds.add(id);
     }
 
-    public ArrayList<Subtask> getSubtasks() {
-        return subtasks;
+    public List<Integer> getSubtaskIds() {
+        return subtaskIds;
     }
 
-    private ArrayList<Integer> getSubtaskIDs() {
-        var list = new ArrayList<Integer>();
-
-        for (Subtask subtask : subtasks) {
-            list.add(subtask.getId());
-        }
-
-        return list;
+    public void setSubtaskIds(List<Integer> subtaskIds) {
+        this.subtaskIds.clear();
+        this.subtaskIds.addAll(subtaskIds);
     }
-    
+
     public static Epic fromString(String string) {
         String[] record = string.split(",");
 

@@ -4,15 +4,25 @@ import util.TaskStatus;
 import util.TaskType;
 
 public class Subtask extends Task {
-    private Epic epic;
+    private Integer epicId;
+
+    public Subtask(Integer id, Epic epic) {
+        super(id);
+        this.epicId = epic.getId();
+    }
+
+    public Subtask(Integer id, Integer epicId) {
+        super(id);
+        this.epicId = epicId;
+    }
 
     public Subtask(int id, TaskCreationData dto, Epic epic) {
         super(id, dto);
         this.epic = epic;
     }
 
-    public Epic getEpic() {
-        return epic;
+    public Integer getEpicId() {
+        return epicId;
     }
 
     @Override
