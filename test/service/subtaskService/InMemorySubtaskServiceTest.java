@@ -1,5 +1,6 @@
 package service.subtaskService;
 
+import interfaces.TaskManager;
 import interfaces.service.EpicService;
 import interfaces.service.SubtaskService;
 import model.Epic;
@@ -7,11 +8,7 @@ import model.Subtask;
 import model.Task;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import repository.InMemoryRepository;
-import service.epicService.InMemoryEpicService;
-import util.IdGenerator;
-import util.InMemoryHistoryManager;
-import util.TaskManagerConfig;
+import service.InMemoryTaskManager;
 import util.TaskStatus;
 
 import java.util.List;
@@ -24,14 +21,10 @@ class InMemorySubtaskServiceTest {
 
     @BeforeEach
     public void beforeEach() {
-        TaskManagerConfig config = new TaskManagerConfig(
-                new InMemoryRepository(),
-                new IdGenerator(),
-                new InMemoryHistoryManager()
-        );
+        TaskManager manager = new InMemoryTaskManager();
 
-        epicService = new InMemoryEpicService(config);
-        subtaskService = new InMemorySubtaskService(config);
+        epicService = manager.getEpicService();
+        subtaskService = manager.getSubtaskService();
     }
 
     @Test

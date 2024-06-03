@@ -6,7 +6,6 @@ import interfaces.service.SubtaskService;
 import model.Epic;
 import model.Subtask;
 import util.IdGenerator;
-import util.TaskManagerConfig;
 import util.TaskStatus;
 
 import java.util.List;
@@ -17,10 +16,14 @@ public abstract class AbstractSubtaskService implements SubtaskService {
     private final IdGenerator idGenerator;
     private final HistoryManager historyManager;
 
-    public AbstractSubtaskService(TaskManagerConfig config) {
-        this.repository = config.repository();
-        this.idGenerator = config.idGenerator();
-        this.historyManager = config.historyManager();
+    public AbstractSubtaskService(
+            Repository repository,
+            IdGenerator idGenerator,
+            HistoryManager historyManager
+    ) {
+        this.repository = repository;
+        this.idGenerator = idGenerator;
+        this.historyManager = historyManager;
     }
 
     @Override

@@ -2,7 +2,6 @@ package service;
 
 import interfaces.HistoryManager;
 import interfaces.TaskManager;
-import interfaces.repository.Repository;
 import interfaces.service.EpicService;
 import interfaces.service.SubtaskService;
 import interfaces.service.TaskService;
@@ -13,31 +12,23 @@ import service.subtaskService.InMemorySubtaskService;
 import service.taskService.InMemoryTaskService;
 import util.IdGenerator;
 import util.InMemoryHistoryManager;
-import util.TaskManagerConfig;
 
 import java.util.List;
 
 public class InMemoryTaskManager implements TaskManager {
-    private final TaskService taskService;
-    private final EpicService epicService;
-    private final SubtaskService subtaskService;
-    private final TaskManagerConfig config;
+    private final HistoryManager historyManager;
+    protected TaskService taskService;
+    protected EpicService epicService;
+    protected SubtaskService subtaskService;
 
     public InMemoryTaskManager() {
-        Repository repository = new InMemoryRepository();
+        InMemoryRepository repository = new InMemoryRepository();
         IdGenerator idGenerator = new IdGenerator();
-        HistoryManager historyService = new InMemoryHistoryManager();
 
-        TaskManagerConfig config = new TaskManagerConfig(
-                repository,
-                idGenerator,
-                historyService
-        );
-
-        this.config = config;
-        taskService = new InMemoryTaskService(config);
-        epicService = new InMemoryEpicService(config);
-        subtaskService = new InMemorySubtaskService(config);
+        historyManager = new InMemoryHistoryManager();
+        taskService = new InMemoryTaskService(repository, idGenerator, historyManager);
+        epicService = new InMemoryEpicService(repository, idGenerator, historyManager);
+        subtaskService = new InMemorySubtaskService(repository, idGenerator, historyManager);
     }
 
     @Override
@@ -57,6 +48,6 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public List<Task> getHistory() {
-        return config.historyManager().getHistory();
+        return historyManager.getHistory();
     }
 }

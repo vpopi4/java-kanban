@@ -1,9 +1,15 @@
 package service.subtaskService;
 
-import util.TaskManagerConfig;
+import interfaces.HistoryManager;
+import repository.InMemoryRepository;
+import util.IdGenerator;
 
 public class InMemorySubtaskService extends AbstractSubtaskService {
-    public InMemorySubtaskService(TaskManagerConfig config) {
-        super(config);
+    public InMemorySubtaskService(
+            InMemoryRepository repository,
+            IdGenerator idGenerator,
+            HistoryManager historyManager
+    ) {
+        super(repository, idGenerator, historyManager);
     }
 }

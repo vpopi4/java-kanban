@@ -10,7 +10,7 @@ import util.TaskType;
 import java.util.*;
 
 public class InMemoryRepository implements Repository {
-    private final Map<Integer, Taskable> store;
+    protected final Map<Integer, Taskable> store;
     private final Set<Integer> tasks;
     private final Set<Integer> epics;
     private final Set<Integer> subtasks;

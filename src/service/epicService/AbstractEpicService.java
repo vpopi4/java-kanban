@@ -6,7 +6,6 @@ import interfaces.service.EpicService;
 import model.Epic;
 import model.Subtask;
 import util.IdGenerator;
-import util.TaskManagerConfig;
 import util.TaskStatus;
 
 import java.util.ArrayList;
@@ -14,14 +13,18 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 public abstract class AbstractEpicService implements EpicService {
-    private final Repository repository;
-    private final IdGenerator idGenerator;
-    private final HistoryManager historyManager;
+    protected final Repository repository;
+    protected final IdGenerator idGenerator;
+    protected final HistoryManager historyManager;
 
-    public AbstractEpicService(TaskManagerConfig config) {
-        this.repository = config.repository();
-        this.idGenerator = config.idGenerator();
-        this.historyManager = config.historyManager();
+    public AbstractEpicService(
+            Repository repository,
+            IdGenerator idGenerator,
+            HistoryManager historyManager
+    ) {
+        this.repository = repository;
+        this.idGenerator = idGenerator;
+        this.historyManager = historyManager;
     }
 
     @Override

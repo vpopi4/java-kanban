@@ -5,7 +5,6 @@ import interfaces.repository.Repository;
 import interfaces.service.TaskService;
 import model.Task;
 import util.IdGenerator;
-import util.TaskManagerConfig;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -15,10 +14,14 @@ public abstract class AbstractTaskService implements TaskService {
     private final IdGenerator idGenerator;
     private final HistoryManager historyManager;
 
-    public AbstractTaskService(TaskManagerConfig config) {
-        this.repository = config.repository();
-        this.idGenerator = config.idGenerator();
-        this.historyManager = config.historyManager();
+    public AbstractTaskService(
+            Repository repository,
+            IdGenerator idGenerator,
+            HistoryManager historyManager
+    ) {
+        this.repository = repository;
+        this.idGenerator = idGenerator;
+        this.historyManager = historyManager;
     }
 
     @Override

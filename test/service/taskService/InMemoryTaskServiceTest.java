@@ -1,14 +1,11 @@
 package service.taskService;
 
-import interfaces.HistoryManager;
+import interfaces.TaskManager;
 import interfaces.service.TaskService;
 import model.Task;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import repository.InMemoryRepository;
-import util.IdGenerator;
-import util.InMemoryHistoryManager;
-import util.TaskManagerConfig;
+import service.InMemoryTaskManager;
 import util.TaskStatus;
 
 import java.util.List;
@@ -18,19 +15,13 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class InMemoryTaskServiceTest {
     TaskService taskService;
-    HistoryManager historyManager;
+    TaskManager manager;
 
     @BeforeEach
     public void beforeEach() {
-        historyManager = new InMemoryHistoryManager();
+        manager = new InMemoryTaskManager();
 
-        TaskManagerConfig config = new TaskManagerConfig(
-                new InMemoryRepository(),
-                new IdGenerator(),
-                historyManager
-        );
-
-        taskService = new InMemoryTaskService(config);
+        taskService = manager.getTaskService();
     }
 
     @Test
@@ -121,7 +112,7 @@ public class InMemoryTaskServiceTest {
 
         // Assert
         assertTrue(exceptionCatched);
-        assertTrue(historyManager.getHistory().isEmpty());
+        assertTrue(manager.getHistory().isEmpty());
         assertEquals(2, tasks.size());
         assertEquals(task0, tasks.get(0));
         assertEquals(task2, tasks.get(1));

@@ -1,9 +1,15 @@
 package service.epicService;
 
-import util.TaskManagerConfig;
+import interfaces.HistoryManager;
+import repository.InMemoryRepository;
+import util.IdGenerator;
 
 public class InMemoryEpicService extends AbstractEpicService {
-    public InMemoryEpicService(TaskManagerConfig config) {
-        super(config);
+    public InMemoryEpicService(
+            InMemoryRepository repository,
+            IdGenerator idGenerator,
+            HistoryManager historyManager
+    ) {
+        super(repository, idGenerator, historyManager);
     }
 }
