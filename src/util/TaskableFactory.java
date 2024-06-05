@@ -27,7 +27,6 @@ public class TaskableFactory {
     public static Taskable deserialize(String string) {
         List<String> record = Arrays.stream(string.split(",", -1)).toList();
 
-        System.out.println(record);
         Integer id = Integer.parseInt(record.get(0));
         TaskType type = TaskType.valueOf(record.get(1));
         String name = record.get(2);
