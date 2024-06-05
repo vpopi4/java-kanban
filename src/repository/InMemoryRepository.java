@@ -52,7 +52,6 @@ public class InMemoryRepository implements Repository {
         Taskable record = store.get(id);
 
         if (record.getType() != TaskType.TASK) {
-            tasks.remove(id);
             throw new IllegalArgumentException("record is not a task");
         }
 
@@ -68,7 +67,6 @@ public class InMemoryRepository implements Repository {
         Taskable record = store.get(id);
 
         if (record.getType() != TaskType.EPIC) {
-            epics.remove(id);
             throw new IllegalArgumentException("record is not an epic");
         }
 
@@ -84,7 +82,6 @@ public class InMemoryRepository implements Repository {
         Taskable record = store.get(id);
 
         if (record.getType() != TaskType.SUBTASK) {
-            subtasks.remove(id);
             throw new IllegalArgumentException("record is not a subtask");
         }
 
@@ -98,7 +95,6 @@ public class InMemoryRepository implements Repository {
             Taskable record = store.get(id);
 
             if (record.getType() != TaskType.TASK) {
-                tasks.remove(id);
                 continue;
             }
 
@@ -114,7 +110,6 @@ public class InMemoryRepository implements Repository {
             Taskable record = store.get(id);
 
             if (record.getType() != TaskType.EPIC) {
-                epics.remove(id);
                 continue;
             }
 
@@ -130,7 +125,6 @@ public class InMemoryRepository implements Repository {
             Taskable record = store.get(id);
 
             if (record.getType() != TaskType.SUBTASK) {
-                epics.remove(id);
                 continue;
             }
 
