@@ -1,13 +1,20 @@
 package repository;
 
 import interfaces.model.Taskable;
+import model.Epic;
+import model.Subtask;
 import util.ManagerSaveException;
+import util.TaskType;
+import util.TaskableFactory;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class FileBackedRepository extends InMemoryRepository {
@@ -18,13 +25,14 @@ public class FileBackedRepository extends InMemoryRepository {
         this.pathToBackup = pathToBackup;
     }
 
-    public void save() throws ManagerSaveException {
+    public void save() {
         try {
             String header = "id,type,name,status,description,epic\n";
             StringBuilder sb = new StringBuilder(header);
 
             for (Map.Entry<Integer, Taskable> entry : store.entrySet()) {
-                sb.append(entry.getValue().toString());
+                sb.append(TaskableFactory.serialize(entry.getValue()));
+                sb.append("\n");
             }
 
             Files.writeString(

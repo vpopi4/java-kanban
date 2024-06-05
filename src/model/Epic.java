@@ -1,6 +1,5 @@
 package model;
 
-import util.TaskStatus;
 import util.TaskType;
 
 import java.util.ArrayList;
@@ -32,23 +31,16 @@ public class Epic extends Task {
         this.subtaskIds.addAll(subtaskIds);
     }
 
-    public static Epic fromString(String string) {
-        String[] record = string.split(",");
-
-        Integer id = Integer.parseInt(record[0]);
-        TaskType type = TaskType.valueOf(record[1]);
-        String name = record[2];
-        TaskStatus status = TaskStatus.valueOf(record[3]);
-        String description = record[4];
-
-        if (type == TaskType.EPIC) {
-            Epic epic = new Epic(id);
-            epic.setName(name);
-            epic.setStatus(status);
-            epic.setDescription(description);
-            return epic;
-        }
-
-        throw new IllegalArgumentException("record can not be resolved as epic");
+    @Override
+    public String toString() {
+        return String.format(
+                "(%d) %s: %s - %s [%s] Subtasks:%s",
+                id,
+                getType(),
+                name,
+                description,
+                status,
+                getSubtaskIds()
+        );
     }
 }

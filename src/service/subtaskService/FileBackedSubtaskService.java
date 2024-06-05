@@ -15,6 +15,7 @@ public class FileBackedSubtaskService extends InMemorySubtaskService {
             IdGenerator idGenerator,
             HistoryManager historyManager) {
         super(repository, idGenerator, historyManager);
+        this.repository = repository;
     }
 
     @Override

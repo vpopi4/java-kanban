@@ -11,9 +11,9 @@ import java.util.*;
 
 public class InMemoryRepository implements Repository {
     protected final Map<Integer, Taskable> store;
-    private final Set<Integer> tasks;
-    private final Set<Integer> epics;
-    private final Set<Integer> subtasks;
+    protected final Set<Integer> tasks;
+    protected final Set<Integer> epics;
+    protected final Set<Integer> subtasks;
 
     public InMemoryRepository() {
         store = new HashMap<>();

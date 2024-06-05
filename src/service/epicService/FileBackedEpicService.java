@@ -15,6 +15,7 @@ public class FileBackedEpicService extends InMemoryEpicService {
             IdGenerator idGenerator,
             HistoryManager historyManager) {
         super(repository, idGenerator, historyManager);
+        this.repository = repository;
     }
 
     @Override

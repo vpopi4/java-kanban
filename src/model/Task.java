@@ -4,6 +4,8 @@ import interfaces.model.Taskable;
 import util.TaskStatus;
 import util.TaskType;
 
+import java.util.Objects;
+
 public class Task implements Taskable {
     protected Integer id;
     protected String name;
@@ -54,31 +56,26 @@ public class Task implements Taskable {
 
     @Override
     public String toString() {
-        // id,type,name,status,description,epic
-        return id + "," +
-                TaskType.TASK + "," +
-                name + "," +
-                status + "," +
-                description + ",\n";
+        return String.format(
+                "(%d) %s: %s - %s [%s]",
+                id,
+                getType(),
+                name,
+                description,
+                status
+        );
     }
 
-    public static Task fromString(String string) {
-        String[] record = string.split(",");
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Task task = (Task) o;
+        return Objects.equals(id, task.id) && Objects.equals(name, task.name) && Objects.equals(description, task.description) && status == task.status;
+    }
 
-        Integer id = Integer.parseInt(record[0]);
-        TaskType type = TaskType.valueOf(record[1]);
-        String name = record[2];
-        TaskStatus status = TaskStatus.valueOf(record[3]);
-        String description = record[4];
-
-        if (type == TaskType.TASK) {
-            Task task = new Task(id);
-            task.setName(name);
-            task.setStatus(status);
-            task.setDescription(description);
-            return task;
-        }
-
-        throw new IllegalArgumentException("record can not be resolved as task");
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, description, status);
     }
 }
