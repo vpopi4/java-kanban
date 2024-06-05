@@ -33,7 +33,19 @@ public class Task implements Taskable {
     }
 
     public void setName(String name) {
-        this.name = name;
+        if (name == null) {
+            throw new IllegalArgumentException("name should not be null");
+        }
+
+        if (name.isBlank()) {
+            throw new IllegalArgumentException("name should not be empty");
+        }
+
+        if (name.contains("\n")) {
+            throw new IllegalArgumentException("name must be one line string");
+        }
+
+        this.name = name.trim();
     }
 
     @Override
@@ -42,7 +54,19 @@ public class Task implements Taskable {
     }
 
     public void setDescription(String description) {
-        this.description = description;
+        if (description == null) {
+            throw new IllegalArgumentException("description should not be null");
+        }
+
+        if (description.isBlank()) {
+            throw new IllegalArgumentException("description should not be empty");
+        }
+
+        if (description.contains("\n")) {
+            throw new IllegalArgumentException("description must be one line string");
+        }
+
+        this.description = description.trim();
     }
 
     @Override
