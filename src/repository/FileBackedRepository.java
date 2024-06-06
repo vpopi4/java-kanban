@@ -42,7 +42,7 @@ public class FileBackedRepository extends InMemoryRepository {
                     StandardOpenOption.CREATE,
                     StandardOpenOption.TRUNCATE_EXISTING);
         } catch (IOException e) {
-            throw new ManagerSaveException();
+            throw new ManagerSaveException(e);
         }
     }
 
@@ -73,7 +73,7 @@ public class FileBackedRepository extends InMemoryRepository {
 
             restoreRelations();
         } catch (IOException e) {
-            throw new ManagerSaveException();
+            throw new ManagerSaveException(e);
         }
     }
 
