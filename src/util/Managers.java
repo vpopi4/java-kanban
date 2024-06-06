@@ -2,11 +2,12 @@ package util;
 
 import interfaces.HistoryManager;
 import interfaces.TaskManager;
+import service.FileBackedTaskManager;
 import service.InMemoryTaskManager;
 
 public class Managers {
     public TaskManager getDefault() {
-        return getInMemoryTaskManager();
+        return getFileBackedTaskManager();
     }
 
     public HistoryManager getDefaultHistory() {
@@ -15,5 +16,9 @@ public class Managers {
 
     public TaskManager getInMemoryTaskManager() {
         return new InMemoryTaskManager();
+    }
+
+    public TaskManager getFileBackedTaskManager() {
+        return new FileBackedTaskManager();
     }
 }

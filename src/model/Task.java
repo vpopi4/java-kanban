@@ -33,19 +33,7 @@ public class Task implements Taskable {
     }
 
     public void setName(String name) {
-        if (name == null) {
-            throw new IllegalArgumentException("name should not be null");
-        }
-
-        if (name.isBlank()) {
-            throw new IllegalArgumentException("name should not be empty");
-        }
-
-        if (name.contains("\n")) {
-            throw new IllegalArgumentException("name must be one line string");
-        }
-
-        this.name = name.trim();
+        this.name = validateNameAndDescription("name", name);
     }
 
     @Override
@@ -54,19 +42,7 @@ public class Task implements Taskable {
     }
 
     public void setDescription(String description) {
-        if (description == null) {
-            throw new IllegalArgumentException("description should not be null");
-        }
-
-        if (description.isBlank()) {
-            throw new IllegalArgumentException("description should not be empty");
-        }
-
-        if (description.contains("\n")) {
-            throw new IllegalArgumentException("description must be one line string");
-        }
-
-        this.description = description.trim();
+        this.description = validateNameAndDescription("description", description);
     }
 
     @Override
@@ -76,6 +52,22 @@ public class Task implements Taskable {
 
     public void setStatus(TaskStatus status) {
         this.status = status;
+    }
+
+    private String validateNameAndDescription(String key, String value) {
+        if (value == null) {
+            throw new IllegalArgumentException(key + " should not be null");
+        }
+
+        if (value.isBlank()) {
+            throw new IllegalArgumentException(key + " should not be empty");
+        }
+
+        if (value.contains("\n")) {
+            throw new IllegalArgumentException(key + " must be one line string");
+        }
+
+        return value.trim();
     }
 
     @Override
