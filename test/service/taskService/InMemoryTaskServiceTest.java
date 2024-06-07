@@ -1,63 +1,42 @@
 package service.taskService;
 
-import interfaces.HistoryManager;
+import interfaces.TaskManager;
 import interfaces.service.TaskService;
 import model.Task;
-import model.TaskCreationData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import repository.InMemoryTaskRepository;
-import util.IdGenerator;
-import util.InMemoryHistoryManager;
-import util.TaskManagerConfig;
+import service.InMemoryTaskManager;
 import util.TaskStatus;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class InMemoryTaskServiceTest {
     TaskService taskService;
-    HistoryManager historyManager;
+    TaskManager manager;
 
     @BeforeEach
     public void beforeEach() {
-        historyManager = new InMemoryHistoryManager();
+        manager = new InMemoryTaskManager();
 
-        TaskManagerConfig config = new TaskManagerConfig(
-                new InMemoryTaskRepository(),
-                null,
-                null,
-                new IdGenerator(),
-                historyManager
-        );
-
-        taskService = new InMemoryTaskService(config);
+        taskService = manager.getTaskService();
     }
 
     @Test
     public void testCreation_twoTasksCase() {
         // creating first task
-        // Arrange
-        TaskCreationData data = new TaskCreationData(
-                "name",
-                "lorem ipsum dollar"
-        );
-
         // Act
-        Task task0 = taskService.create(data);
+        Task task0 = taskService.create("name", "lorem ipsum dollar");
 
         // Assertion
         assertEquals(0, task0.getId());
         assertEquals(TaskStatus.NEW, task0.getStatus());
 
         // creating second task
-        // Arrange
-        data.setName("name1");
-
         // Act
-        Task task1 = taskService.create(data);
+        Task task1 = taskService.create("name1", "lorem ipsum dollar");
         task1.setStatus(TaskStatus.IN_PROGRESS);
 
         // Assertion
@@ -75,7 +54,7 @@ public class InMemoryTaskServiceTest {
         assertEquals(task1, task1FromRepo);
 
         // Act
-        ArrayList<Task> tasks = taskService.getAll();
+        List<Task> tasks = taskService.getAll();
 
         // Arrange
         assertEquals(tasks.get(0), task0FromRepo);
@@ -83,42 +62,9 @@ public class InMemoryTaskServiceTest {
     }
 
     @Test
-    public void testCreating_nullValues() {
-        // Arrange
-        TaskCreationData data = new TaskCreationData(null, null);
-
-        // Act
-        Task task = taskService.create(data);
-        Task taskFromRepo = taskService.get(0);
-
-        // Assert
-        assertInstanceOf(Task.class, task);
-        assertNull(task.getName());
-        assertNull(task.getDescription());
-        assertEquals(TaskStatus.NEW, task.getStatus());
-        assertEquals(task, taskFromRepo);
-
-        // Arrange
-        data = null;
-
-        // Act
-        task = taskService.create(data);
-        taskFromRepo = taskService.get(1);
-
-        // Assert
-        assertInstanceOf(Task.class, task);
-        assertNull(task.getName());
-        assertNull(task.getDescription());
-        assertEquals(TaskStatus.NEW, task.getStatus());
-        assertEquals(task, taskFromRepo);
-    }
-
-
-    @Test
     public void testUpdating() {
         // Arrange
-        TaskCreationData data = new TaskCreationData("name", "lorem ipsum dollar");
-        Task task = taskService.create(data);
+        Task task = taskService.create("name", "lorem ipsum dollar");
 
         task.setName("different name");
         task.setStatus(TaskStatus.IN_PROGRESS);
@@ -145,9 +91,9 @@ public class InMemoryTaskServiceTest {
     public void testRemoving() {
         // test void remove(Integer id) method
         // Arrange
-        Task task0 = taskService.create(new TaskCreationData("task 0", "learn java"));
-        Task task1 = taskService.create(new TaskCreationData("task 1", "learn unit testing"));
-        Task task2 = taskService.create(new TaskCreationData("task 2", "learn git"));
+        Task task0 = taskService.create("task 0", "learn java");
+        Task task1 = taskService.create("task 1", "learn unit testing");
+        Task task2 = taskService.create("task 2", "learn git");
 
         task0.setStatus(TaskStatus.IN_PROGRESS);
         task1.setStatus(TaskStatus.DONE);
@@ -155,7 +101,7 @@ public class InMemoryTaskServiceTest {
         // Act
         taskService.remove(task1.getId());
 
-        ArrayList<Task> tasks = taskService.getAll();
+        List<Task> tasks = taskService.getAll();
 
         boolean exceptionCatched = false;
         try {
@@ -166,7 +112,7 @@ public class InMemoryTaskServiceTest {
 
         // Assert
         assertTrue(exceptionCatched);
-        assertTrue(historyManager.getHistory().isEmpty());
+        assertTrue(manager.getHistory().isEmpty());
         assertEquals(2, tasks.size());
         assertEquals(task0, tasks.get(0));
         assertEquals(task2, tasks.get(1));
@@ -197,7 +143,7 @@ public class InMemoryTaskServiceTest {
 
         // test creating tasks after removing all
         // Arrange
-        Task task3 = taskService.create(new TaskCreationData("task 3", "learn spring"));
+        Task task3 = taskService.create("task 3", "learn spring");
 
         // Assert
         assertEquals(3, task3.getId());
@@ -206,7 +152,7 @@ public class InMemoryTaskServiceTest {
     @Test
     public void testUpdation_withoutUpdateMethod() {
         // Arrange
-        Task task = taskService.create(new TaskCreationData("name", "desk"));
+        Task task = taskService.create("name", "desk");
 
         // Act
         task.setStatus(TaskStatus.DONE);
@@ -216,7 +162,7 @@ public class InMemoryTaskServiceTest {
         assertSame(task, taskFromRepo);
 
         // Arrange
-        taskService.create(new TaskCreationData("name1", "some text"));
+        taskService.create("name1", "some text");
 
         // Act
         Task task1 = taskService.get(1);

@@ -1,18 +1,20 @@
 package interfaces.service;
 
 import model.Task;
-import model.TaskCreationData;
 
-import java.util.ArrayList;
+import java.util.List;
+import java.util.NoSuchElementException;
 
 public interface TaskService {
-    Task create(TaskCreationData dto);
+    Task create(String name, String description);
 
-    Task get(Integer id);
+    Task create(String name);
 
-    ArrayList<Task> getAll();
+    Task get(Integer id) throws NoSuchElementException;
 
-    Task update(Task task);
+    List<Task> getAll();
+
+    Task update(Task task) throws NoSuchElementException, IllegalArgumentException;
 
     void remove(Integer id);
 

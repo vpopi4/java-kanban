@@ -1,25 +1,39 @@
 package model;
 
-public class Subtask extends Task {
-    private Epic epic;
+import util.TaskType;
 
-    public Subtask(int id, TaskCreationData dto, Epic epic) {
-        super(id, dto);
-        this.epic = epic;
+public class Subtask extends Task {
+    private final Integer epicId;
+
+    public Subtask(Integer id, Epic epic) {
+        super(id);
+        this.epicId = epic.getId();
     }
 
-    public Epic getEpic() {
-        return epic;
+    public Subtask(Integer id, Integer epicId) {
+        super(id);
+        this.epicId = epicId;
+    }
+
+    public Integer getEpicId() {
+        return epicId;
+    }
+
+    @Override
+    public TaskType getType() {
+        return TaskType.SUBTASK;
     }
 
     @Override
     public String toString() {
-        return "Subtask{" +
-                "\n\tid=" + id +
-                ",\n\tname='" + name + '\'' +
-                ",\n\tdescription='" + description + '\'' +
-                ",\n\tstatus=" + status +
-                ",\n\tepic.id=" + epic.getId() +
-                "\n}";
+        return String.format(
+                "(%d) %s: %s - %s [%s] Epic:%d",
+                id,
+                getType(),
+                name,
+                description,
+                status,
+                getEpicId()
+        );
     }
 }

@@ -2,22 +2,24 @@ package interfaces.service;
 
 import model.Epic;
 import model.Subtask;
-import model.TaskCreationData;
 
-import java.util.ArrayList;
+import java.util.List;
+import java.util.NoSuchElementException;
 
 public interface EpicService {
-    Epic create(TaskCreationData data);
+    Epic create(String name, String description);
 
-    Epic get(Integer id);
+    Epic create(String name);
 
-    ArrayList<Epic> getAll();
+    Epic get(Integer id) throws NoSuchElementException;
 
-    Epic update(Integer id, TaskCreationData data);
+    List<Epic> getAll();
+
+    Epic update(Epic epic) throws NoSuchElementException, IllegalArgumentException;
 
     void remove(Integer id);
 
     void removeAll();
 
-    ArrayList<Subtask> getSubtasks(Integer epicId);
+    List<Subtask> getSubtasks(Integer epicId) throws NoSuchElementException;
 }

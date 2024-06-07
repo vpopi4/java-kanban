@@ -1,49 +1,51 @@
 package model;
 
+import interfaces.model.Taskable;
 import util.TaskStatus;
+import util.TaskType;
 
 import java.util.Objects;
 
-public class Task {
-    protected int id;
+public class Task implements Taskable {
+    protected Integer id;
     protected String name;
     protected String description;
     protected TaskStatus status;
 
-    public Task(int id, TaskCreationData dto) {
+    public Task(Integer id) {
         this.id = id;
-        this.name = dto.getName();
-        this.description = dto.getDescription();
         this.status = TaskStatus.NEW;
     }
 
-    public Task(int id, String name, String description) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-        this.status = TaskStatus.NEW;
-    }
-
-    public int getId() {
+    @Override
+    public Integer getId() {
         return id;
     }
 
+    @Override
+    public TaskType getType() {
+        return TaskType.TASK;
+    }
+
+    @Override
     public String getName() {
         return name;
     }
 
     public void setName(String name) {
-        this.name = name;
+        this.name = validateNameAndDescription("name", name);
     }
 
+    @Override
     public String getDescription() {
         return description;
     }
 
     public void setDescription(String description) {
-        this.description = description;
+        this.description = validateNameAndDescription("description", description);
     }
 
+    @Override
     public TaskStatus getStatus() {
         return status;
     }
@@ -52,14 +54,32 @@ public class Task {
         this.status = status;
     }
 
+    private String validateNameAndDescription(String key, String value) {
+        if (value == null) {
+            throw new IllegalArgumentException(key + " should not be null");
+        }
+
+        if (value.isBlank()) {
+            throw new IllegalArgumentException(key + " should not be empty");
+        }
+
+        if (value.contains("\n")) {
+            throw new IllegalArgumentException(key + " must be one line string");
+        }
+
+        return value.trim();
+    }
+
     @Override
     public String toString() {
-        return "Task{" +
-                "\n\tid=" + id +
-                ",\n\tname='" + name + '\'' +
-                ",\n\tdescription='" + description + '\'' +
-                ",\n\tstatus=" + status +
-                "\n}";
+        return String.format(
+                "(%d) %s: %s - %s [%s]",
+                id,
+                getType(),
+                name,
+                description,
+                status
+        );
     }
 
     @Override
@@ -67,7 +87,7 @@ public class Task {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Task task = (Task) o;
-        return id == task.id && Objects.equals(name, task.name) && Objects.equals(description, task.description) && status == task.status;
+        return Objects.equals(id, task.id) && Objects.equals(name, task.name) && Objects.equals(description, task.description) && status == task.status;
     }
 
     @Override

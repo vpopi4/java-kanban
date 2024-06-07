@@ -1,41 +1,46 @@
 package model;
 
+import util.TaskType;
+
 import java.util.ArrayList;
+import java.util.List;
 
 public class Epic extends Task {
-    private final ArrayList<Subtask> subtasks;
+    private final List<Integer> subtaskIds;
 
-    public Epic(int id, TaskCreationData dto) {
-        super(id, dto.getName(), dto.getDescription());
-        subtasks = new ArrayList<>();
+    public Epic(Integer id) {
+        super(id);
+        subtaskIds = new ArrayList<>();
     }
 
-    public void addSubtask(Subtask subtask) {
-        subtasks.add(subtask);
+    @Override
+    public TaskType getType() {
+        return TaskType.EPIC;
     }
 
-    public ArrayList<Subtask> getSubtasks() {
-        return subtasks;
+    public void addSubtaskId(Integer id) {
+        subtaskIds.add(id);
+    }
+
+    public List<Integer> getSubtaskIds() {
+        return subtaskIds;
+    }
+
+    public void setSubtaskIds(List<Integer> subtaskIds) {
+        this.subtaskIds.clear();
+        this.subtaskIds.addAll(subtaskIds);
     }
 
     @Override
     public String toString() {
-        return "Epic{" +
-                "\n\tid=" + id +
-                ",\n\tname='" + name + '\'' +
-                ",\n\tdescription='" + description + '\'' +
-                ",\n\tstatus=" + status +
-                ",\n\tsubtasksIDs=" + getSubtaskIDs() +
-                "\n}";
-    }
-
-    private ArrayList<Integer> getSubtaskIDs() {
-        var list = new ArrayList<Integer>();
-
-        for (Subtask subtask : subtasks) {
-            list.add(subtask.getId());
-        }
-
-        return list;
+        return String.format(
+                "(%d) %s: %s - %s [%s] Subtasks:%s",
+                id,
+                getType(),
+                name,
+                description,
+                status,
+                getSubtaskIds()
+        );
     }
 }
