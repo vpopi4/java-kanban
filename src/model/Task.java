@@ -102,14 +102,14 @@ public class Task implements Taskable {
 
     @Override
     public String toString() {
-        return String.format(
-                "(%d) %s: %s - %s [%s]",
-                id,
-                getType(),
-                name,
-                description,
-                status
-        );
+        return "Task {"
+                + "\n\tid          = " + id
+                + "\n\tname        = " + name
+                + "\n\tdescription = " + description
+                + "\n\tstatus      = " + status
+                + "\n\tduration    = " + duration
+                + "\n\tstartTime   = " + startTime
+                + "\n}";
     }
 
     @Override

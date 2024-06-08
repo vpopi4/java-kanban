@@ -26,14 +26,14 @@ public class Subtask extends Task {
 
     @Override
     public String toString() {
-        return String.format(
-                "(%d) %s: %s - %s [%s] Epic:%d",
-                id,
-                getType(),
-                name,
-                description,
-                status,
-                getEpicId()
-        );
+        return "Task {"
+                + "\n\tid          = " + id
+                + "\n\tname        = " + name
+                + "\n\tdescription = " + description
+                + "\n\tstatus      = " + status
+                + "\n\tduration    = " + duration
+                + "\n\tstartTime   = " + startTime
+                + "\n\tepicId      = " + epicId
+                + "\n}";
     }
 }
