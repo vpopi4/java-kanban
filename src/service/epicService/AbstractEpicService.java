@@ -8,6 +8,8 @@ import model.Subtask;
 import util.IdGenerator;
 import util.TaskStatus;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -28,27 +30,25 @@ public abstract class AbstractEpicService implements EpicService {
     }
 
     @Override
-    public Epic create(String name, String description) {
+    public Epic create(String name,
+                       String description,
+                       Duration duration,
+                       LocalDateTime startTime) {
         Integer id = idGenerator.generateNewId();
 
         Epic epic = new Epic(id);
         epic.setName(name);
         epic.setDescription(description);
         epic.setStatus(TaskStatus.NEW);
+        epic.setDuration(duration);
+        epic.setStartTime(startTime);
 
         return repository.create(epic);
     }
 
     @Override
-    public Epic create(String name) {
-        Integer id = idGenerator.generateNewId();
-
-        Epic epic = new Epic(id);
-        epic.setName(name);
-        epic.setDescription("");
-        epic.setStatus(TaskStatus.NEW);
-
-        return repository.create(epic);
+    public Epic create(String name, String description) {
+        return create(name, description, null, null);
     }
 
     @Override

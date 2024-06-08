@@ -5,6 +5,8 @@ import model.Epic;
 import repository.FileBackedRepository;
 import util.IdGenerator;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.NoSuchElementException;
 
 public class FileBackedEpicService extends InMemoryEpicService {
@@ -19,8 +21,8 @@ public class FileBackedEpicService extends InMemoryEpicService {
     }
 
     @Override
-    public Epic create(String name, String description) {
-        Epic epic = super.create(name, description);
+    public Epic create(String name, String description, Duration duration, LocalDateTime startTime) {
+        Epic epic = super.create(name, description, duration, startTime);
 
         repository.save();
 
@@ -28,14 +30,13 @@ public class FileBackedEpicService extends InMemoryEpicService {
     }
 
     @Override
-    public Epic create(String name) {
-        Epic epic = super.create(name);
+    public Epic create(String name, String description) {
+        Epic epic = super.create(name, description);
 
         repository.save();
 
         return epic;
     }
-
 
     @Override
     public Epic update(Epic epic) throws NoSuchElementException, IllegalArgumentException {

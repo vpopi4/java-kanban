@@ -5,7 +5,10 @@ import interfaces.repository.Repository;
 import interfaces.service.TaskService;
 import model.Task;
 import util.IdGenerator;
+import util.TaskStatus;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -25,23 +28,27 @@ public abstract class AbstractTaskService implements TaskService {
     }
 
     @Override
-    public Task create(String name, String description) {
+    public Task create(
+            String name,
+            String description,
+            Duration duration,
+            LocalDateTime startTime
+    ) {
         Integer id = idGenerator.generateNewId();
+
         Task task = new Task(id);
         task.setName(name);
         task.setDescription(description);
+        task.setStatus(TaskStatus.NEW);
+        task.setDuration(duration);
+        task.setStartTime(startTime);
 
         return repository.create(task);
     }
 
     @Override
-    public Task create(String name) {
-        Integer id = idGenerator.generateNewId();
-        Task task = new Task(id);
-        task.setName(name);
-        task.setDescription("");
-
-        return repository.create(task);
+    public Task create(String name, String description) {
+        return create(name, description, null, null);
     }
 
     @Override

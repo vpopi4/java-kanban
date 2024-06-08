@@ -5,6 +5,8 @@ import model.Subtask;
 import repository.FileBackedRepository;
 import util.IdGenerator;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.NoSuchElementException;
 
 public class FileBackedSubtaskService extends InMemorySubtaskService {
@@ -19,8 +21,8 @@ public class FileBackedSubtaskService extends InMemorySubtaskService {
     }
 
     @Override
-    public Subtask create(Integer epicId, String name, String description) {
-        Subtask subtask = super.create(epicId, name, description);
+    public Subtask create(Integer epicId, String name, String description, Duration duration, LocalDateTime startTime) {
+        Subtask subtask = super.create(epicId, name, description, duration, startTime);
 
         repository.save();
 
@@ -28,14 +30,13 @@ public class FileBackedSubtaskService extends InMemorySubtaskService {
     }
 
     @Override
-    public Subtask create(Integer epicId, String name) {
-        Subtask subtask = super.create(epicId, name);
+    public Subtask create(Integer epicId, String name, String description) {
+        Subtask subtask = super.create(epicId, name, description);
 
         repository.save();
 
         return subtask;
     }
-
 
     @Override
     public Subtask update(Subtask subtask) throws NoSuchElementException, IllegalArgumentException {
