@@ -14,18 +14,21 @@ public class InMemoryRepository implements Repository {
     protected final Set<Integer> tasks;
     protected final Set<Integer> epics;
     protected final Set<Integer> subtasks;
+    private final TreeSet<Taskable> prioritizedTasks;
 
     public InMemoryRepository() {
-        store = new HashMap<>();
+        store = new LinkedHashMap<>();
         tasks = new HashSet<>();
         epics = new HashSet<>();
         subtasks = new HashSet<>();
+        prioritizedTasks = new TreeSet<>(Comparator.comparing(Taskable::getStartTime));
     }
 
     @Override
     public Task create(Task task) {
         store.put(task.getId(), task);
         tasks.add(task.getId());
+        prioritizedTasks.add(task);
         return task;
     }
 
@@ -40,7 +43,12 @@ public class InMemoryRepository implements Repository {
     public Subtask create(Subtask subtask) {
         store.put(subtask.getId(), subtask);
         subtasks.add(subtask.getId());
+        prioritizedTasks.add(subtask);
         return subtask;
+    }
+
+    public Optional<Taskable> getAnyTaskById(Integer id) {
+        return Optional.ofNullable(store.get(id));
     }
 
     @Override
@@ -133,6 +141,10 @@ public class InMemoryRepository implements Repository {
         return list;
     }
 
+    public List<Taskable> getPrioritizedTasks() {
+        return new ArrayList<>(prioritizedTasks);
+    }
+
     @Override
     public Task update(Task task) throws NoSuchElementException {
         int id = task.getId();
@@ -142,6 +154,9 @@ public class InMemoryRepository implements Repository {
         }
 
         store.put(id, task);
+
+        prioritizedTasks.remove(task);
+        prioritizedTasks.add(task);
 
         return task;
     }
@@ -168,6 +183,8 @@ public class InMemoryRepository implements Repository {
         }
 
         store.put(id, subtask);
+        prioritizedTasks.remove(subtask);
+        prioritizedTasks.add(subtask);
 
         return subtask;
     }
@@ -175,10 +192,14 @@ public class InMemoryRepository implements Repository {
     @Override
     public void remove(Integer id) {
         if (tasks.contains(id)) {
+            Taskable taskable = store.get(id);
+            prioritizedTasks.remove(taskable);
             tasks.remove(id);
         } else if (epics.contains(id)) {
             epics.remove(id);
         } else {
+            Taskable taskable = store.get(id);
+            prioritizedTasks.remove(taskable);
             subtasks.remove(id);
         }
         store.remove(id);
@@ -187,6 +208,8 @@ public class InMemoryRepository implements Repository {
     @Override
     public void removeAllTasks() {
         for (Integer id : tasks) {
+            Taskable taskable = store.get(id);
+            prioritizedTasks.remove(taskable);
             store.remove(id);
         }
         tasks.clear();
@@ -205,6 +228,8 @@ public class InMemoryRepository implements Repository {
     @Override
     public void removeAllSubtasks() {
         for (Integer id : subtasks) {
+            Taskable taskable = store.get(id);
+            prioritizedTasks.remove(taskable);
             store.remove(id);
         }
         subtasks.clear();
