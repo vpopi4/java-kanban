@@ -28,7 +28,7 @@ public class InMemoryRepository implements Repository {
     public Task create(Task task) {
         store.put(task.getId(), task);
         tasks.add(task.getId());
-        prioritizedTasks.add(task);
+        addToPrioritizedTasks(task);
         return task;
     }
 
@@ -43,7 +43,7 @@ public class InMemoryRepository implements Repository {
     public Subtask create(Subtask subtask) {
         store.put(subtask.getId(), subtask);
         subtasks.add(subtask.getId());
-        prioritizedTasks.add(subtask);
+        addToPrioritizedTasks(subtask);
         return subtask;
     }
 
@@ -155,8 +155,7 @@ public class InMemoryRepository implements Repository {
 
         store.put(id, task);
 
-        prioritizedTasks.remove(task);
-        prioritizedTasks.add(task);
+        updateToPrioritizedTasks(task);
 
         return task;
     }
@@ -183,8 +182,7 @@ public class InMemoryRepository implements Repository {
         }
 
         store.put(id, subtask);
-        prioritizedTasks.remove(subtask);
-        prioritizedTasks.add(subtask);
+        updateToPrioritizedTasks(subtask);
 
         return subtask;
     }
@@ -233,5 +231,18 @@ public class InMemoryRepository implements Repository {
             store.remove(id);
         }
         subtasks.clear();
+    }
+
+    private void addToPrioritizedTasks(Taskable taskable) {
+        if (taskable.getStartTime() != null) {
+            prioritizedTasks.add(taskable);
+        }
+    }
+
+    private void updateToPrioritizedTasks(Taskable taskable) {
+        if (taskable.getStartTime() != null) {
+            prioritizedTasks.remove(taskable);
+            prioritizedTasks.add(taskable);
+        }
     }
 }
