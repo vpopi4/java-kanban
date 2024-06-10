@@ -47,98 +47,63 @@ public class InMemoryRepository implements Repository {
         return subtask;
     }
 
+    @Override
     public Optional<Taskable> getAnyTaskById(Integer id) {
         return Optional.ofNullable(store.get(id));
     }
 
     @Override
-    public Task getTaskById(Integer id) throws NoSuchElementException {
-        if (!tasks.contains(id) || !store.containsKey(id)) {
-            throw new NoSuchElementException("task not found");
+    public Optional<Task> getTaskById(Integer id) {
+        if (!tasks.contains(id)) {
+            return Optional.empty();
         }
 
-        Taskable record = store.get(id);
-
-        if (record.getType() != TaskType.TASK) {
-            throw new IllegalArgumentException("record is not a task");
-        }
-
-        return (Task) record;
+        return Optional.ofNullable((Task) store.get(id));
     }
 
     @Override
-    public Epic getEpicById(Integer id) throws NoSuchElementException {
-        if (!epics.contains(id) || !store.containsKey(id)) {
-            throw new NoSuchElementException("epic not found");
+    public Optional<Epic> getEpicById(Integer id) {
+        if (!epics.contains(id)) {
+            return Optional.empty();
         }
 
-        Taskable record = store.get(id);
-
-        if (record.getType() != TaskType.EPIC) {
-            throw new IllegalArgumentException("record is not an epic");
-        }
-
-        return (Epic) record;
+        return Optional.ofNullable((Epic) store.get(id));
     }
 
     @Override
-    public Subtask getSubtaskById(Integer id) throws NoSuchElementException {
-        if (!subtasks.contains(id) || !store.containsKey(id)) {
-            throw new NoSuchElementException("subtask not found");
+    public Optional<Subtask> getSubtaskById(Integer id) {
+        if (!subtasks.contains(id)) {
+            return Optional.empty();
         }
 
-        Taskable record = store.get(id);
-
-        if (record.getType() != TaskType.SUBTASK) {
-            throw new IllegalArgumentException("record is not a subtask");
-        }
-
-        return (Subtask) record;
+        return Optional.ofNullable((Subtask) store.get(id));
     }
 
     @Override
     public List<Task> getAllTasks() {
-        List<Task> list = new ArrayList<>(tasks.size());
-        for (Integer id : tasks) {
-            Taskable record = store.get(id);
-
-            if (record.getType() != TaskType.TASK) {
-                continue;
-            }
-
-            list.add((Task) record);
-        }
-        return list;
+        return tasks.stream()
+                .map(store::get)
+                .filter(taskable -> taskable.getType() == TaskType.TASK)
+                .map(taskable -> (Task) taskable)
+                .toList();
     }
 
     @Override
     public List<Epic> getAllEpics() {
-        List<Epic> list = new ArrayList<>(epics.size());
-        for (Integer id : epics) {
-            Taskable record = store.get(id);
-
-            if (record.getType() != TaskType.EPIC) {
-                continue;
-            }
-
-            list.add((Epic) record);
-        }
-        return list;
+        return epics.stream()
+                .map(store::get)
+                .filter(taskable -> taskable.getType() == TaskType.EPIC)
+                .map(taskable -> (Epic) taskable)
+                .toList();
     }
 
     @Override
     public List<Subtask> getAllSubtasks() {
-        List<Subtask> list = new ArrayList<>(subtasks.size());
-        for (Integer id : subtasks) {
-            Taskable record = store.get(id);
-
-            if (record.getType() != TaskType.SUBTASK) {
-                continue;
-            }
-
-            list.add((Subtask) record);
-        }
-        return list;
+        return subtasks.stream()
+                .map(store::get)
+                .filter(taskable -> taskable.getType() == TaskType.SUBTASK)
+                .map(taskable -> (Subtask) taskable)
+                .toList();
     }
 
     public List<Taskable> getPrioritizedTasks() {

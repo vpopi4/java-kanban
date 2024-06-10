@@ -6,7 +6,6 @@ import model.Subtask;
 import model.Task;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 public interface Repository {
@@ -18,11 +17,11 @@ public interface Repository {
 
     Optional<Taskable> getAnyTaskById(Integer id);
 
-    Task getTaskById(Integer id) throws NoSuchElementException;
+    Optional<Task> getTaskById(Integer id);
 
-    Epic getEpicById(Integer id) throws NoSuchElementException;
+    Optional<Epic> getEpicById(Integer id);
 
-    Subtask getSubtaskById(Integer id) throws NoSuchElementException;
+    Optional<Subtask> getSubtaskById(Integer id);
 
     List<Task> getAllTasks();
 

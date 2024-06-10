@@ -53,7 +53,9 @@ public abstract class AbstractTaskService implements TaskService {
 
     @Override
     public Task get(Integer id) throws NoSuchElementException {
-        Task task = repository.getTaskById(id);
+        Task task = repository
+                .getTaskById(id)
+                .orElseThrow();
         historyManager.add(task);
         return task;
     }
@@ -67,6 +69,18 @@ public abstract class AbstractTaskService implements TaskService {
     public Task update(Task task) throws NoSuchElementException, IllegalArgumentException {
         if (task == null) {
             throw new IllegalArgumentException();
+        }
+
+        Task savedTask = repository
+                .getTaskById(task.getId())
+                .orElseThrow();
+
+        if (task != savedTask) {
+            savedTask.setName(task.getName());
+            savedTask.setDescription(task.getDescription());
+            savedTask.setStatus(task.getStatus());
+            savedTask.setStartTime(task.getStartTime());
+            savedTask.setDuration(task.getDuration());
         }
 
         return repository.update(task);
