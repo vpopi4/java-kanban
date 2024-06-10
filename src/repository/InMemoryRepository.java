@@ -145,6 +145,10 @@ public class InMemoryRepository implements Repository {
         return new ArrayList<>(prioritizedTasks);
     }
 
+    public TreeSet<Taskable> getPrioritizedTasksInTree() {
+        return prioritizedTasks;
+    }
+
     @Override
     public Task update(Task task) throws NoSuchElementException {
         int id = task.getId();
