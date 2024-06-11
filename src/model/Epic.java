@@ -33,7 +33,7 @@ public class Epic extends Task {
 
     @Override
     public String toString() {
-        return "Task {"
+        return "Epic {"
                 + "\n\tid          = " + id
                 + "\n\tname        = " + name
                 + "\n\tdescription = " + description
