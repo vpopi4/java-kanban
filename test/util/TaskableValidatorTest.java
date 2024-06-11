@@ -69,7 +69,11 @@ class TaskableValidatorTest {
         TreeSet<Taskable> ts = new TreeSet<>(taskableComparator);
         ts.add(floor);
 
-        assertTrue(TaskableValidator.checkIntersectionClosestSearch(t1, ts));
+        Exception exception = assertThrows(TaskableValidator.IntersectionException.class, () -> {
+            TaskableValidator.checkIntersectionClosestSearch(t1, ts);
+        });
+
+        assertTrue(exception.getMessage().contains("intersection has occurred"));
     }
 
     @Test
@@ -89,7 +93,11 @@ class TaskableValidatorTest {
         TreeSet<Taskable> ts = new TreeSet<>(taskableComparator); // Pass custom comparator to TreeSet constructor
         ts.add(ceiling);
 
-        assertTrue(TaskableValidator.checkIntersectionClosestSearch(t1, ts));
+        Exception exception = assertThrows(TaskableValidator.IntersectionException.class, () -> {
+            TaskableValidator.checkIntersectionClosestSearch(t1, ts);
+        });
+
+        assertTrue(exception.getMessage().contains("intersection has occurred"));
     }
 
     @Test
@@ -116,6 +124,6 @@ class TaskableValidatorTest {
         ts.add(floor);
         ts.add(ceiling);
 
-        assertFalse(TaskableValidator.checkIntersectionClosestSearch(t1, ts));
+        assertDoesNotThrow(() -> TaskableValidator.checkIntersectionClosestSearch(t1, ts));
     }
 }

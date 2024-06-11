@@ -26,29 +26,33 @@ public class InMemoryTaskService extends AbstractTaskService {
     public Task create(String name, String description, Duration duration, LocalDateTime startTime) {
         Task task = super.create(name, description, duration, startTime);
 
-        boolean isIntersect = TaskableValidator.checkIntersectionClosestSearch(
-                task,
-                repository.getPrioritizedTasksInTree()
-        );
 
-        if (isIntersect) {
+        try {
+            TaskableValidator.checkIntersectionClosestSearch(
+                    task,
+                    repository.getPrioritizedTasksInTree()
+            );
+        } catch (TaskableValidator.IntersectionException e) {
             remove(task.getId());
-            throw new IllegalArgumentException("task should not intersect");
+            throw e;
         }
+
 
         return task;
     }
 
     @Override
     public Task update(Task task) throws NoSuchElementException, IllegalArgumentException {
-        boolean isIntersect = TaskableValidator.checkIntersectionClosestSearch(
-                task,
-                repository.getPrioritizedTasksInTree()
-        );
-
-        if (isIntersect) {
-            throw new IllegalArgumentException("task should not intersect");
+        try {
+            TaskableValidator.checkIntersectionClosestSearch(
+                    task,
+                    repository.getPrioritizedTasksInTree()
+            );
+        } catch (TaskableValidator.IntersectionException e) {
+            remove(task.getId());
+            throw e;
         }
+
 
         return super.update(task);
     }

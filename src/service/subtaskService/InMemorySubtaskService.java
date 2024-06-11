@@ -26,14 +26,14 @@ public class InMemorySubtaskService extends AbstractSubtaskService {
     public Subtask create(Integer epicId, String name, String description, Duration duration, LocalDateTime startTime) {
         Subtask subtask = super.create(epicId, name, description, duration, startTime);
 
-        boolean isIntersect = TaskableValidator.checkIntersectionClosestSearch(
-                subtask,
-                repository.getPrioritizedTasksInTree()
-        );
-
-        if (isIntersect) {
+        try {
+            TaskableValidator.checkIntersectionClosestSearch(
+                    subtask,
+                    repository.getPrioritizedTasksInTree()
+            );
+        } catch (TaskableValidator.IntersectionException e) {
             remove(subtask.getId());
-            throw new IllegalArgumentException("task should not intersect");
+            throw e;
         }
 
         return subtask;
@@ -41,14 +41,14 @@ public class InMemorySubtaskService extends AbstractSubtaskService {
 
     @Override
     public Subtask update(Subtask subtask) throws NoSuchElementException {
-        boolean isIntersect = TaskableValidator.checkIntersectionClosestSearch(
-                subtask,
-                repository.getPrioritizedTasksInTree()
-        );
-
-        if (isIntersect) {
+        try {
+            TaskableValidator.checkIntersectionClosestSearch(
+                    subtask,
+                    repository.getPrioritizedTasksInTree()
+            );
+        } catch (TaskableValidator.IntersectionException e) {
             remove(subtask.getId());
-            throw new IllegalArgumentException("task should not intersect");
+            throw e;
         }
 
         return super.update(subtask);
