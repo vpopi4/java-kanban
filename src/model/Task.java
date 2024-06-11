@@ -19,6 +19,7 @@ public class Task implements Taskable {
     public Task(Integer id) {
         this.id = id;
         this.status = TaskStatus.NEW;
+        this.duration = Duration.ZERO;
     }
 
     @Override

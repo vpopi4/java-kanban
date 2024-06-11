@@ -48,7 +48,7 @@ public abstract class AbstractTaskService implements TaskService {
 
     @Override
     public Task create(String name, String description) {
-        return create(name, description, null, null);
+        return create(name, description, Duration.ZERO, null);
     }
 
     @Override

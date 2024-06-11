@@ -55,7 +55,7 @@ public abstract class AbstractSubtaskService implements SubtaskService {
 
     @Override
     public Subtask create(Integer epicId, String name, String description) throws NoSuchElementException {
-        return create(epicId, name, description, null, null);
+        return create(epicId, name, description, Duration.ZERO, null);
     }
 
     @Override
@@ -147,6 +147,7 @@ public abstract class AbstractSubtaskService implements SubtaskService {
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .map(Task::getStartTime)
+                .filter(Objects::nonNull)
                 .min(LocalDateTime::compareTo)
                 .orElse(null);
     }
