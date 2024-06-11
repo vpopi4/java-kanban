@@ -27,7 +27,7 @@ public class FileBackedRepository extends InMemoryRepository {
 
     public void save() {
         try {
-            String header = "id,type,name,status,description,epic\n";
+            String header = "id,type,name,status,description,duration,startTime,epic\n";
             StringBuilder sb = new StringBuilder(header);
 
             for (Map.Entry<Integer, Taskable> entry : store.entrySet()) {
