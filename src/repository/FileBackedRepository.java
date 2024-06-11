@@ -90,19 +90,21 @@ public class FileBackedRepository extends InMemoryRepository {
     }
 
     private void restoreRelations() {
+        List<Epic> allEpics = getAllEpics();
         HashMap<Integer, List<Integer>> subtaskIdsOfEpics = new HashMap<>();
 
-        for (Epic epic : getAllEpics()) {
-            List<Integer> subtaskIds = new ArrayList<>();
-
-            subtaskIdsOfEpics.put(epic.getId(), subtaskIds);
-            epic.setSubtaskIds(subtaskIds);
+        for (Epic epic : allEpics) {
+            subtaskIdsOfEpics.put(epic.getId(), new ArrayList<>());
         }
 
         for (Subtask subtask : getAllSubtasks()) {
             subtaskIdsOfEpics
                     .get(subtask.getEpicId())
                     .add(subtask.getId());
+        }
+
+        for (Epic epic : allEpics) {
+            epic.setSubtaskIds(subtaskIdsOfEpics.get(epic.getId()));
         }
     }
 }
