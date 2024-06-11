@@ -6,8 +6,11 @@ import model.Subtask;
 import model.Task;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.Month;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 class TaskableFactoryTest {
     @Test
@@ -17,9 +20,10 @@ class TaskableFactoryTest {
         entity.setName("Some name");
         entity.setDescription("Lorem ipsum");
         entity.setStatus(TaskStatus.NEW);
+        entity.setDuration(Duration.ofMillis(60_000));
 
         // Act
-        String expected = "0,TASK,Some name,NEW,Lorem ipsum,";
+        String expected = "0,TASK,Some name,NEW,Lorem ipsum,60000,null,";
         String actual = TaskableFactory.serialize(entity);
 
         // Assert
@@ -28,9 +32,11 @@ class TaskableFactoryTest {
         // Arrange
         entity.setStatus(TaskStatus.DONE);
         entity.setDescription("  leading and trailing space here!   ");
+        entity.setDuration(Duration.ZERO);
+        entity.setStartTime(LocalDateTime.of(2024, Month.JUNE, 10, 10, 0));
 
         // Act
-        expected = "0,TASK,Some name,DONE,leading and trailing space here!,";
+        expected = "0,TASK,Some name,DONE,leading and trailing space here!,0,2024-06-10T10:00,";
         actual = TaskableFactory.serialize(entity);
 
         // Assert
@@ -43,8 +49,9 @@ class TaskableFactoryTest {
         entity.setName("Some name");
         entity.setDescription("Lorem ipsum");
         entity.setStatus(TaskStatus.NEW);
+        entity.setDuration(Duration.ofMillis(40000));
 
-        String expected = "0,EPIC,Some name,NEW,Lorem ipsum,";
+        String expected = "0,EPIC,Some name,NEW,Lorem ipsum,40000,null,";
 
         String actual = TaskableFactory.serialize(entity);
 
@@ -57,8 +64,10 @@ class TaskableFactoryTest {
         entity.setName("Some name");
         entity.setDescription("Lorem ipsum");
         entity.setStatus(TaskStatus.DONE);
+        entity.setDuration(Duration.ofMillis(666));
+        entity.setStartTime(LocalDateTime.of(2024, Month.JUNE, 10, 10, 0));
 
-        String expected = "1,SUBTASK,Some name,DONE,Lorem ipsum,0";
+        String expected = "1,SUBTASK,Some name,DONE,Lorem ipsum,666,2024-06-10T10:00,0";
 
         String actual = TaskableFactory.serialize(entity);
 
@@ -67,7 +76,7 @@ class TaskableFactoryTest {
 
     @Test
     public void testDeserialization() {
-        String record = "0,EPIC,Some name,NEW,Lorem ipsum,";
+        String record = "0,EPIC,Some name,NEW,Lorem ipsum,90000,null";
 
         Taskable deserializedRecord = TaskableFactory.deserialize(record);
 
@@ -77,8 +86,10 @@ class TaskableFactoryTest {
         assertEquals("Some name", deserializedRecord.getName());
         assertEquals("Lorem ipsum", deserializedRecord.getDescription());
         assertEquals(TaskStatus.NEW, deserializedRecord.getStatus());
+        assertEquals(Duration.ofMillis(90_000), deserializedRecord.getDuration());
+        assertNull(deserializedRecord.getStartTime());
 
-        record = "1,SUBTASK,SubSome name,IN_PROGRESS,Lorem ipsum dollar,0";
+        record = "1,SUBTASK,SubSome name,IN_PROGRESS,Lorem ipsum dollar,0,null,0";
         deserializedRecord = TaskableFactory.deserialize(record);
 
         assertEquals(deserializedRecord.getType(), TaskType.SUBTASK);
