@@ -8,9 +8,11 @@ import model.Subtask;
 import util.IdGenerator;
 import util.TaskStatus;
 
-import java.util.ArrayList;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 public abstract class AbstractEpicService implements EpicService {
     protected final Repository repository;
@@ -28,33 +30,32 @@ public abstract class AbstractEpicService implements EpicService {
     }
 
     @Override
-    public Epic create(String name, String description) {
+    public Epic create(String name,
+                       String description,
+                       Duration duration,
+                       LocalDateTime startTime) {
         Integer id = idGenerator.generateNewId();
 
         Epic epic = new Epic(id);
         epic.setName(name);
         epic.setDescription(description);
         epic.setStatus(TaskStatus.NEW);
+        epic.setDuration(duration);
+        epic.setStartTime(startTime);
 
         return repository.create(epic);
     }
 
     @Override
-    public Epic create(String name) {
-        Integer id = idGenerator.generateNewId();
-
-        Epic epic = new Epic(id);
-        epic.setName(name);
-        epic.setDescription("");
-        epic.setStatus(TaskStatus.NEW);
-
-        return repository.create(epic);
+    public Epic create(String name, String description) {
+        return create(name, description, Duration.ZERO, null);
     }
 
     @Override
     public Epic get(Integer id) throws NoSuchElementException {
-        Epic epic = repository.getEpicById(id);
-
+        Epic epic = repository
+                .getEpicById(id)
+                .orElseThrow();
         historyManager.add(epic);
         return epic;
     }
@@ -70,7 +71,9 @@ public abstract class AbstractEpicService implements EpicService {
             throw new IllegalArgumentException();
         }
 
-        Epic savedEpic = repository.getEpicById(epic.getId());
+        Epic savedEpic = repository
+                .getEpicById(epic.getId())
+                .orElseThrow();
 
         savedEpic.setName(epic.getName());
         savedEpic.setDescription(epic.getDescription());
@@ -80,17 +83,18 @@ public abstract class AbstractEpicService implements EpicService {
 
     @Override
     public void remove(Integer id) {
-        try {
-            Epic epic = repository.getEpicById(id);
+        Optional<Epic> epicInRepo = repository.getEpicById(id);
 
-            for (Integer subtaskId : epic.getSubtaskIds()) {
-                repository.remove(subtaskId);
-            }
-
-            repository.remove(id);
-        } catch (NoSuchElementException e) {
-            // pass
+        if (epicInRepo.isEmpty()) {
+            return;
         }
+
+        epicInRepo
+                .get()
+                .getSubtaskIds()
+                .forEach(repository::remove);
+
+        repository.remove(id);
     }
 
     @Override
@@ -100,14 +104,12 @@ public abstract class AbstractEpicService implements EpicService {
 
     @Override
     public List<Subtask> getSubtasks(Integer epicId) throws NoSuchElementException {
-        Epic epic = repository.getEpicById(epicId);
+        Epic epic = repository.getEpicById(epicId).orElseThrow();
 
-        List<Subtask> list = new ArrayList<>(epic.getSubtaskIds().size());
-
-        for (Integer subtaskId : epic.getSubtaskIds()) {
-            list.add(repository.getSubtaskById(subtaskId));
-        }
-
-        return list;
+        return epic.getSubtaskIds().stream()
+                .map(repository::getSubtaskById)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .toList();
     }
 }

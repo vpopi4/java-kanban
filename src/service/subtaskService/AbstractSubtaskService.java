@@ -5,61 +5,64 @@ import interfaces.repository.Repository;
 import interfaces.service.SubtaskService;
 import model.Epic;
 import model.Subtask;
+import model.Task;
 import util.IdGenerator;
 import util.TaskStatus;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Objects;
+import java.util.Optional;
 
 public abstract class AbstractSubtaskService implements SubtaskService {
     private final Repository repository;
     private final IdGenerator idGenerator;
     private final HistoryManager historyManager;
 
-    public AbstractSubtaskService(
-            Repository repository,
-            IdGenerator idGenerator,
-            HistoryManager historyManager
-    ) {
+    public AbstractSubtaskService(Repository repository, IdGenerator idGenerator, HistoryManager historyManager) {
         this.repository = repository;
         this.idGenerator = idGenerator;
         this.historyManager = historyManager;
     }
 
     @Override
-    public Subtask create(Integer epicId, String name, String description) throws NoSuchElementException {
-        Epic epic = repository.getEpicById(epicId);
+    public Subtask create(Integer epicId,
+                          String name,
+                          String description,
+                          Duration duration,
+                          LocalDateTime startTime) throws NoSuchElementException {
+        Epic epic = repository
+                .getEpicById(epicId)
+                .orElseThrow();
         Integer id = idGenerator.generateNewId();
 
         Subtask subtask = new Subtask(id, epic.getId());
         subtask.setName(name);
         subtask.setDescription(description);
+        subtask.setStatus(TaskStatus.NEW);
+        subtask.setDuration(duration);
+        subtask.setStartTime(startTime);
 
         epic.addSubtaskId(id);
+        epic.setStartTime(calculateStartTime(epic));
+        epic.setDuration(calculateDuration(epic));
 
         repository.update(epic);
         return repository.create(subtask);
     }
 
     @Override
-    public Subtask create(Integer epicId, String name) throws NoSuchElementException {
-        Epic epic = repository.getEpicById(epicId);
-        Integer id = idGenerator.generateNewId();
-
-        Subtask subtask = new Subtask(id, epic.getId());
-        subtask.setName(name);
-        subtask.setDescription("");
-
-        epic.addSubtaskId(id);
-
-        repository.update(epic);
-        return repository.create(subtask);
+    public Subtask create(Integer epicId, String name, String description) throws NoSuchElementException {
+        return create(epicId, name, description, Duration.ZERO, null);
     }
 
     @Override
     public Subtask get(Integer id) throws NoSuchElementException {
-        Subtask subtask = repository.getSubtaskById(id);
-
+        Subtask subtask = repository
+                .getSubtaskById(id)
+                .orElseThrow();
         historyManager.add(subtask);
         return subtask;
     }
@@ -71,28 +74,58 @@ public abstract class AbstractSubtaskService implements SubtaskService {
 
     @Override
     public Subtask update(Subtask subtask) throws NoSuchElementException {
-        Subtask savedSubtask = repository.getSubtaskById(subtask.getId());
-        Epic savedEpic = repository.getEpicById(subtask.getEpicId());
+        if (subtask == null) {
+            throw new IllegalArgumentException();
+        }
 
-        savedSubtask.setName(subtask.getName());
-        savedSubtask.setDescription(subtask.getDescription());
-        savedSubtask.setStatus(subtask.getStatus());
+        Subtask savedSubtask = repository
+                .getSubtaskById(subtask.getId())
+                .orElseThrow();
+        Epic savedEpic = repository
+                .getEpicById(subtask.getEpicId())
+                .orElseThrow();
 
-        savedEpic.setStatus(calculateStatusOfEpic(savedEpic));
+        if (subtask != savedSubtask) {
+            savedSubtask.setName(subtask.getName());
+            savedSubtask.setDescription(subtask.getDescription());
+            savedSubtask.setStatus(subtask.getStatus());
+            savedSubtask.setStartTime(subtask.getStartTime());
+            savedSubtask.setDuration(subtask.getDuration());
+        }
+
+        savedEpic.setStatus(calculateStatus(savedEpic));
+        savedEpic.setStartTime(calculateStartTime(savedEpic));
+        savedEpic.setDuration(calculateDuration(savedEpic));
 
         repository.update(savedEpic);
-        return repository.update(savedSubtask);
+        repository.update(savedSubtask);
+
+        return savedSubtask;
     }
 
     @Override
     public void remove(Integer id) {
-        Subtask subtask = repository.getSubtaskById(id);
-        Epic epic = repository.getEpicById(subtask.getEpicId());
+        Optional<Subtask> subtaskInRepo = repository.getSubtaskById(id);
 
-        epic.getSubtaskIds().remove(id);
-        epic.setStatus(calculateStatusOfEpic(epic));
+        if (subtaskInRepo.isEmpty()) {
+            return;
+        }
 
-        repository.update(epic);
+        Integer epicId = subtaskInRepo.get().getEpicId();
+        Optional<Epic> epicInRepo = repository.getEpicById(epicId);
+
+        if (epicInRepo.isPresent()) {
+            Epic epic = epicInRepo.get();
+
+            epic.getSubtaskIds().remove(id);
+
+            epic.setStatus(calculateStatus(epic));
+            epic.setStartTime(calculateStartTime(epic));
+            epic.setDuration(calculateDuration(epic));
+
+            repository.update(epic);
+        }
+
         repository.remove(id);
     }
 
@@ -103,29 +136,50 @@ public abstract class AbstractSubtaskService implements SubtaskService {
         for (Epic epic : repository.getAllEpics()) {
             epic.getSubtaskIds().clear();
             epic.setStatus(TaskStatus.NEW);
+            epic.setDuration(Duration.ZERO);
+            epic.setStartTime(null);
         }
     }
 
-    private TaskStatus calculateStatusOfEpic(Epic epic) {
-        int size = epic.getSubtaskIds().size();
+    private LocalDateTime calculateStartTime(Epic epic) {
+        return epic.getSubtaskIds().stream()
+                .map(repository::getSubtaskById)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .map(Task::getStartTime)
+                .filter(Objects::nonNull)
+                .min(LocalDateTime::compareTo)
+                .orElse(null);
+    }
 
-        if (size == 0) {
-            return TaskStatus.NEW;
-        }
+    private Duration calculateDuration(Epic epic) {
+        return epic.getSubtaskIds().stream()
+                .map(repository::getSubtaskById)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .map(Subtask::getDuration)
+                .filter(Objects::nonNull)
+                .reduce(Duration.ZERO, Duration::plus);
+    }
 
-        int countOfNew = 0;
-        int countOfDone = 0;
+    private TaskStatus calculateStatus(Epic epic) {
+        List<Subtask> subtasks = epic.getSubtaskIds().stream()
+                .map(repository::getSubtaskById)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .toList();
 
-        for (Integer id : epic.getSubtaskIds()) {
-            Subtask subtask = repository.getSubtaskById(id);
-            if (subtask.getStatus() == TaskStatus.NEW) {
-                countOfNew++;
-            } else if (subtask.getStatus() == TaskStatus.DONE) {
-                countOfDone++;
-            }
-        }
+        long countOfNew = subtasks.stream()
+                .filter(subtask -> subtask.getStatus() == TaskStatus.NEW)
+                .count();
 
-        if (countOfNew == size) {
+        long countOfDone = subtasks.stream()
+                .filter(subtask -> subtask.getStatus() == TaskStatus.DONE)
+                .count();
+
+        long size = subtasks.size();
+
+        if (size == 0 || countOfNew == size) {
             return TaskStatus.NEW;
         } else if (countOfDone == size) {
             return TaskStatus.DONE;

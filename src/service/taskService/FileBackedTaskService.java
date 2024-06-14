@@ -5,6 +5,8 @@ import model.Task;
 import repository.FileBackedRepository;
 import util.IdGenerator;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.NoSuchElementException;
 
 public class FileBackedTaskService extends InMemoryTaskService {
@@ -19,8 +21,8 @@ public class FileBackedTaskService extends InMemoryTaskService {
     }
 
     @Override
-    public Task create(String name, String description) {
-        Task task = super.create(name, description);
+    public Task create(String name, String description, Duration duration, LocalDateTime startTime) {
+        Task task = super.create(name, description, duration, startTime);
 
         repository.save();
 
@@ -28,14 +30,13 @@ public class FileBackedTaskService extends InMemoryTaskService {
     }
 
     @Override
-    public Task create(String name) {
-        Task task = super.create(name);
+    public Task create(String name, String description) {
+        Task task = super.create(name, description);
 
         repository.save();
 
         return task;
     }
-
 
     @Override
     public Task update(Task task) throws NoSuchElementException, IllegalArgumentException {

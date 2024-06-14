@@ -2,6 +2,7 @@ package service;
 
 import interfaces.HistoryManager;
 import interfaces.TaskManager;
+import interfaces.model.Taskable;
 import interfaces.service.EpicService;
 import interfaces.service.SubtaskService;
 import interfaces.service.TaskService;
@@ -17,15 +18,16 @@ import java.util.List;
 
 public class InMemoryTaskManager implements TaskManager {
     private final HistoryManager historyManager;
+    private final InMemoryRepository repository;
     protected TaskService taskService;
     protected EpicService epicService;
     protected SubtaskService subtaskService;
 
     public InMemoryTaskManager() {
-        InMemoryRepository repository = new InMemoryRepository();
+        repository = new InMemoryRepository();
         IdGenerator idGenerator = new IdGenerator();
-
         historyManager = new InMemoryHistoryManager();
+
         taskService = new InMemoryTaskService(repository, idGenerator, historyManager);
         epicService = new InMemoryEpicService(repository, idGenerator, historyManager);
         subtaskService = new InMemorySubtaskService(repository, idGenerator, historyManager);
@@ -49,5 +51,9 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public List<Task> getHistory() {
         return historyManager.getHistory();
+    }
+
+    public List<Taskable> getPrioritizedTasks() {
+        return repository.getPrioritizedTasks();
     }
 }

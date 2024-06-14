@@ -27,7 +27,7 @@ public class FileBackedRepository extends InMemoryRepository {
 
     public void save() {
         try {
-            String header = "id,type,name,status,description,epic\n";
+            String header = "id,type,name,status,description,duration,startTime,epic\n";
             StringBuilder sb = new StringBuilder(header);
 
             for (Map.Entry<Integer, Taskable> entry : store.entrySet()) {
@@ -90,19 +90,21 @@ public class FileBackedRepository extends InMemoryRepository {
     }
 
     private void restoreRelations() {
+        List<Epic> allEpics = getAllEpics();
         HashMap<Integer, List<Integer>> subtaskIdsOfEpics = new HashMap<>();
 
-        for (Epic epic : getAllEpics()) {
-            List<Integer> subtaskIds = new ArrayList<>();
-
-            subtaskIdsOfEpics.put(epic.getId(), subtaskIds);
-            epic.setSubtaskIds(subtaskIds);
+        for (Epic epic : allEpics) {
+            subtaskIdsOfEpics.put(epic.getId(), new ArrayList<>());
         }
 
         for (Subtask subtask : getAllSubtasks()) {
             subtaskIdsOfEpics
                     .get(subtask.getEpicId())
                     .add(subtask.getId());
+        }
+
+        for (Epic epic : allEpics) {
+            epic.setSubtaskIds(subtaskIdsOfEpics.get(epic.getId()));
         }
     }
 }

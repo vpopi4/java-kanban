@@ -14,7 +14,7 @@ class IdGeneratorTest {
     }
 
     @Test
-    public void shouldReturn0AfterCallGenerateNewId() {
+    public void testGenerationNewId_firstCall_return0() {
         int expected = 0;
 
         int actual = idGenerator.generateNewId();
@@ -23,7 +23,7 @@ class IdGeneratorTest {
     }
 
     @Test
-    public void shouldReturn1After2TimesCallGenerateNewId() {
+    public void testGenerationNewId_2TimesCall_return1() {
         int expected = 1;
 
         idGenerator.generateNewId();
@@ -33,7 +33,7 @@ class IdGeneratorTest {
     }
 
     @Test
-    public void shouldReturn99After100TimesCallGenerateNewId() {
+    public void testGenerationNewId_100TimesCall_return99() {
         int expected = 99;
 
         for (int i = 0; i < 99; i++) {

@@ -1,11 +1,12 @@
 package interfaces.repository;
 
+import interfaces.model.Taskable;
 import model.Epic;
 import model.Subtask;
 import model.Task;
 
 import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.Optional;
 
 public interface Repository {
     Task create(Task task);
@@ -14,11 +15,13 @@ public interface Repository {
 
     Subtask create(Subtask task);
 
-    Task getTaskById(Integer id) throws NoSuchElementException;
+    Optional<Taskable> getAnyTaskById(Integer id);
 
-    Epic getEpicById(Integer id) throws NoSuchElementException;
+    Optional<Task> getTaskById(Integer id);
 
-    Subtask getSubtaskById(Integer id) throws NoSuchElementException;
+    Optional<Epic> getEpicById(Integer id);
+
+    Optional<Subtask> getSubtaskById(Integer id);
 
     List<Task> getAllTasks();
 

@@ -12,7 +12,7 @@ import java.nio.file.Path;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
     public static final Path DEFAULT_PATH_TO_BACKUP = Path.of("store.csv");
-    private FileBackedRepository repository;
+    private final FileBackedRepository repository;
 
     public FileBackedTaskManager() {
         this(DEFAULT_PATH_TO_BACKUP);

@@ -10,6 +10,7 @@ import util.TaskStatus;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Duration;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -73,11 +74,11 @@ public class FileBackedTaskManagerTest {
 
     @Test
     public void testLoadFromFile() throws IOException {
-        String csvData = "id,type,name,status,description,epic\n" +
-                "1,TASK,Task 1,NEW,Description 1,\n" +
-                "2,TASK,Task 2,IN_PROGRESS,Description 2,\n" +
-                "3,EPIC,Epic 1,DONE,Description 3,\n" +
-                "4,SUBTASK,Subtask 1,DONE,Description 4,3\n";
+        String csvData = "id,type,name,status,description,duration,startTime,epic\n" +
+                "1,TASK,Task 1,NEW,Description 1,0,null,\n" +
+                "2,TASK,Task 2,IN_PROGRESS,Description 2,0,null,\n" +
+                "3,EPIC,Epic 1,DONE,Description 3,0,null,\n" +
+                "4,SUBTASK,Subtask 1,DONE,Description 4,0,null,3\n";
 
         Files.writeString(tempFile, csvData);
 
@@ -95,18 +96,22 @@ public class FileBackedTaskManagerTest {
         task1.setName("Task 1");
         task1.setDescription("Description 1");
         task1.setStatus(TaskStatus.NEW);
+        task1.setDuration(Duration.ZERO);
         Task task2 = new Task(2);
         task2.setName("Task 2");
         task2.setDescription("Description 2");
         task2.setStatus(TaskStatus.IN_PROGRESS);
+        task2.setDuration(Duration.ZERO);
         Epic epic1 = new Epic(3);
         epic1.setName("Epic 1");
         epic1.setDescription("Description 3");
         epic1.setStatus(TaskStatus.DONE);
+        epic1.setDuration(Duration.ZERO);
         Subtask subtask1 = new Subtask(4, 3);
         subtask1.setName("Subtask 1");
         subtask1.setDescription("Description 4");
         subtask1.setStatus(TaskStatus.DONE);
+        subtask1.setDuration(Duration.ZERO);
 
         assertEquals(task1, tasks.get(0));
         assertEquals(task2, tasks.get(1));
