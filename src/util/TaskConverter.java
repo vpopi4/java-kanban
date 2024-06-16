@@ -11,8 +11,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-public class TaskableFactory {
-    public static String serialize(Taskable entity) {
+public class TaskConverter {
+    public static String toCsvRecord(Taskable entity) {
         // id,type,name,status,description,duration,startTime,epic
         Duration duration = entity.getDuration() == null
                 ? Duration.ZERO
@@ -33,7 +33,7 @@ public class TaskableFactory {
         return record;
     }
 
-    public static Taskable deserialize(String string) {
+    public static Taskable fromCsvRecord(String string) {
         List<String> record = Arrays.stream(string.split(",", -1)).toList();
 
         Integer id = Integer.parseInt(record.get(0));
