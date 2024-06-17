@@ -89,6 +89,10 @@ public class TaskConverter {
         return gson.toJson(taskable);
     }
 
+    public static String toJson(List<? extends Taskable> tasks) {
+        return gson.toJson(tasks);
+    }
+
     public static Taskable formJson(String json) {
         Taskable taskable = gson.fromJson(json, Task.class);
         if (taskable.getType() == TaskType.EPIC) {
