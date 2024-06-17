@@ -1,50 +1,58 @@
 package handler;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 
 public abstract class BaseHttpHandler implements HttpHandler {
-    protected void sendText(HttpExchange exchange, String text) throws IOException {
-        byte[] response = text.getBytes(StandardCharsets.UTF_8);
-        exchange.getResponseHeaders().add("Content-Type", "application/json;charset=utf-8");
-        exchange.sendResponseHeaders(200, response.length);
+    protected void sendOk(HttpExchange exchange) throws IOException {
+        sendResponse(exchange, 201, "");
+    }
 
-        try (OutputStream os = exchange.getResponseBody()) {
-            os.write(response);
-        }
+    protected void sendPayload(HttpExchange exchange, String payloadKey, String payloadValue) throws IOException {
+        JsonObject json = new JsonObject();
+        json.add(payloadKey, new JsonPrimitive(payloadValue));
+
+        sendResponse(exchange, 200, json.toString());
     }
 
     protected void sendNotFound(HttpExchange exchange, String message) throws IOException {
-        byte[] response = message.getBytes(StandardCharsets.UTF_8);
-        exchange.getResponseHeaders().add("Content-Type", "application/json;charset=utf-8");
-        exchange.sendResponseHeaders(404, response.length);
+        JsonObject json = new JsonObject();
 
-        try (OutputStream os = exchange.getResponseBody()) {
-            os.write(response);
-        }
+        json.add("errorName", new JsonPrimitive("404 Not Found"));
+        json.add("message", new JsonPrimitive(message));
+
+        sendResponse(exchange, 404, json.toString());
     }
 
-    protected void sendHasInteractions(HttpExchange exchange, String message) throws IOException {
-        byte[] response = message.getBytes(StandardCharsets.UTF_8);
-        exchange.getResponseHeaders().add("Content-Type", "application/json;charset=utf-8");
-        exchange.sendResponseHeaders(406, response.length);
+    protected void sendIntersectionException(HttpExchange exchange, String message) throws IOException {
+        JsonObject json = new JsonObject();
 
-        try (OutputStream os = exchange.getResponseBody()) {
-            os.write(response);
-        }
+        json.add("errorName", new JsonPrimitive("406 Intersection Exception"));
+        json.add("message", new JsonPrimitive(message));
+
+        sendResponse(exchange, 406, json.toString());
     }
 
-    protected void sendServerError(HttpExchange exchange, String message) throws IOException {
-        byte[] response = message.getBytes(StandardCharsets.UTF_8);
-        exchange.getResponseHeaders().add("Content-Type", "application/json;charset=utf-8");
-        exchange.sendResponseHeaders(500, response.length);
+    protected void sendInternalServerError(HttpExchange exchange, String message) throws IOException {
+        JsonObject json = new JsonObject();
 
-        try (OutputStream os = exchange.getResponseBody()) {
-            os.write(response);
-        }
+        json.add("errorName", new JsonPrimitive("500 Internal Server Error"));
+        json.add("message", new JsonPrimitive(message));
+
+        sendResponse(exchange, 500, json.toString());
+    }
+
+    private void sendResponse(HttpExchange exchange, int code, String body) throws IOException {
+        byte[] response = body.getBytes(StandardCharsets.UTF_8);
+
+        exchange.getResponseHeaders().add("Content-Type", "application/json;charset=utf-8");
+        exchange.sendResponseHeaders(code, response.length);
+        exchange.getResponseBody().write(response);
+        exchange.close();
     }
 }
