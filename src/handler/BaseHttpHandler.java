@@ -14,10 +14,9 @@ public abstract class BaseHttpHandler implements HttpHandler {
     }
 
     protected void sendPayload(HttpExchange exchange, String payloadKey, String payloadValue) throws IOException {
-        JsonObject json = new JsonObject();
-        json.add(payloadKey, new JsonPrimitive(payloadValue));
+        String responseBody = String.format("{\"%s\":%s}", payloadKey, payloadValue);
 
-        sendResponse(exchange, 200, json.toString());
+        sendResponse(exchange, 200, responseBody);
     }
 
     protected void sendBadRequest(HttpExchange exchange, String message) throws IOException {
