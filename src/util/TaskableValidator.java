@@ -12,10 +12,10 @@ public class TaskableValidator {
         Taskable floor = ts.floor(t1);
         Taskable ceiling = ts.ceiling(t1);
 
-        if (floor != null && isIntersect(t1, floor)) {
+        if (floor != null && !floor.equals(t1) &&  isIntersect(t1, floor)) {
             throw new IntersectionException("intersection has occurred", floor);
         }
-        if (ceiling != null && isIntersect(t1, ceiling)) {
+        if (ceiling != null && !ceiling.equals(t1) && isIntersect(t1, ceiling)) {
             throw new IntersectionException("intersection has occurred", ceiling);
         }
     }

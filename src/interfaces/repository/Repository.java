@@ -7,6 +7,7 @@ import model.Task;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.TreeSet;
 
 public interface Repository {
     Task create(Task task);
@@ -22,6 +23,10 @@ public interface Repository {
     Optional<Epic> getEpicById(Integer id);
 
     Optional<Subtask> getSubtaskById(Integer id);
+
+    List<Taskable> getPrioritizedTasks();
+
+    TreeSet<Taskable> getPrioritizedTasksInTree();
 
     List<Task> getAllTasks();
 

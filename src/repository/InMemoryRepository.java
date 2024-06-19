@@ -106,10 +106,12 @@ public class InMemoryRepository implements Repository {
                 .toList();
     }
 
+    @Override
     public List<Taskable> getPrioritizedTasks() {
         return new ArrayList<>(prioritizedTasks);
     }
 
+    @Override
     public TreeSet<Taskable> getPrioritizedTasksInTree() {
         return prioritizedTasks;
     }
