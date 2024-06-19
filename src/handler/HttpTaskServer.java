@@ -1,5 +1,6 @@
+package handler;
+
 import com.sun.net.httpserver.HttpServer;
-import handler.*;
 import interfaces.TaskManager;
 import util.Managers;
 
@@ -13,9 +14,11 @@ public class HttpTaskServer {
         HttpTaskServer taskServer = new HttpTaskServer();
         taskServer.start();
     }
-
     public HttpTaskServer() throws IOException {
-        TaskManager manager = new Managers().getDefault();
+        this(new Managers().getDefault());
+    }
+
+    public HttpTaskServer(TaskManager manager) throws IOException {
         server = HttpServer.create(new InetSocketAddress(8080), 0);
         server.createContext("/tasks", new TasksHandler(manager));
         server.createContext("/subtasks", new SubtasksHandler(manager));
