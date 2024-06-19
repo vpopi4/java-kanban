@@ -2,6 +2,7 @@ package handler;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
 import com.sun.net.httpserver.HttpExchange;
 import interfaces.TaskManager;
 import interfaces.model.Taskable;
@@ -10,7 +11,7 @@ import util.TaskConverter;
 import util.TaskableValidator;
 
 import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -40,6 +41,12 @@ public class TasksHandler extends BaseHttpHandler {
                 case "DELETE" -> handleDelete(exchange);
                 case null, default -> sendNotFound(exchange, "no such endpoint");
             }
+        } catch (NoSuchElementException e) {
+            sendNotFound(exchange, e.getMessage());
+        } catch (TaskableValidator.IntersectionException e) {
+            sendIntersectionException(exchange, e.getMessage());
+        } catch (IllegalArgumentException e) {
+            sendBadRequest(exchange, e.getMessage());
         } catch (Exception e) {
             sendInternalServerError(exchange, "something went wrong");
             e.printStackTrace();
@@ -52,47 +59,61 @@ public class TasksHandler extends BaseHttpHandler {
         sendPayload(exchange, "tasks", TaskConverter.toJson(all));
     }
 
-    private void handleGetById(HttpExchange exchange) throws IOException {
-        String[] pathParts = exchange.getRequestURI().getPath().split("/");
-        Integer id = Integer.parseInt(pathParts[2]);
+    private void handleGetById(HttpExchange exchange)
+            throws IllegalArgumentException, NoSuchElementException, IOException {
+        Task task = manager.getTaskService().get(extractId(exchange));
 
-        try {
-            Task task = manager.getTaskService().get(id);
-            sendPayload(exchange, "task", TaskConverter.toJson(task));
-        } catch (NoSuchElementException e) {
-            sendNotFound(exchange, e.getMessage());
-        }
+        sendPayload(exchange, "task", TaskConverter.toJson(task));
     }
 
-    private void handlePost(HttpExchange exchange) throws IOException {
-        InputStreamReader isr = new InputStreamReader(exchange.getRequestBody(), StandardCharsets.UTF_8);
-        JsonObject json = JsonParser.parseReader(isr).getAsJsonObject();
-        Taskable task = TaskConverter.formJson(json.get("task").getAsString());
+    private void handlePost(HttpExchange exchange)
+            throws IllegalArgumentException, NoSuchElementException, IOException {
+        Taskable task;
 
-        try {
-            if (task.getId() == null) {
-                task = manager.getTaskService().create(
-                        task.getName(),
-                        task.getDescription(),
-                        task.getDuration(),
-                        task.getStartTime()
-                );
-            } else if (task instanceof Task) {
-                task = manager.getTaskService().update((Task) task);
-            }
-            sendPayload(exchange, "task", TaskConverter.toJson(task));
-        } catch (NoSuchElementException e) {
-            sendNotFound(exchange, e.getMessage());
-        } catch (TaskableValidator.IntersectionException e) {
-            sendIntersectionException(exchange, e.getMessage());
+        try (InputStream requestBody = exchange.getRequestBody()) {
+            String bodyString = new String(requestBody.readAllBytes(), StandardCharsets.UTF_8);
+            JsonObject bodyJson = JsonParser.parseString(bodyString).getAsJsonObject();
+
+            task = TaskConverter.formJson(bodyJson.get("task").getAsString());
+        } catch (JsonSyntaxException e) {
+            throw new IllegalArgumentException("json object was expected in request body");
+        } catch (IllegalArgumentException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new IllegalArgumentException("could not resolve request body");
         }
+
+        if (task.getId() == null) {
+            task = manager.getTaskService().create(
+                    task.getName(),
+                    task.getDescription(),
+                    task.getDuration(),
+                    task.getStartTime()
+            );
+        } else if (task instanceof Task) {
+            task = manager.getTaskService().update((Task) task);
+        } else {
+            throw new IllegalStateException("not a Task: " + task);
+        }
+
+        sendPayload(exchange, "task", TaskConverter.toJson(task));
     }
 
-    private void handleDelete(HttpExchange exchange) throws IOException {
-        String[] pathParts = exchange.getRequestURI().getPath().split("/");
-        int id = Integer.parseInt(pathParts[2]);
-
-        manager.getTaskService().remove(id);
+    private void handleDelete(HttpExchange exchange) throws IllegalArgumentException, IOException {
+        manager.getTaskService().remove(extractId(exchange));
         sendOk(exchange);
+    }
+
+    private Integer extractId(HttpExchange exchange) throws IllegalArgumentException {
+        try {
+            String secondInPath = exchange
+                    .getRequestURI()
+                    .getPath()
+                    .split("/")
+                    [2];
+            return Integer.parseInt(secondInPath);
+        } catch (IndexOutOfBoundsException | NumberFormatException e) {
+            throw new IllegalArgumentException("id must be integer");
+        }
     }
 }

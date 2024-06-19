@@ -20,6 +20,15 @@ public abstract class BaseHttpHandler implements HttpHandler {
         sendResponse(exchange, 200, json.toString());
     }
 
+    protected void sendBadRequest(HttpExchange exchange, String message) throws IOException {
+        JsonObject json = new JsonObject();
+
+        json.add("errorName", new JsonPrimitive("400 Bad Request"));
+        json.add("message", new JsonPrimitive(message));
+
+        sendResponse(exchange, 400, json.toString());
+    }
+
     protected void sendNotFound(HttpExchange exchange, String message) throws IOException {
         JsonObject json = new JsonObject();
 

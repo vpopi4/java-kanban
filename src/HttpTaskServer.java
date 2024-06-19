@@ -1,5 +1,7 @@
 import com.sun.net.httpserver.HttpServer;
 import handler.*;
+import interfaces.TaskManager;
+import util.Managers;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -13,10 +15,11 @@ public class HttpTaskServer {
     }
 
     public HttpTaskServer() throws IOException {
+        TaskManager manager = new Managers().getDefault();
         server = HttpServer.create(new InetSocketAddress(8080), 0);
-        server.createContext("/tasks", new TasksHandler());
-        server.createContext("/subtasks", new SubtasksHandler());
-        server.createContext("/epics", new EpicsHandler());
+        server.createContext("/tasks", new TasksHandler(manager));
+        server.createContext("/subtasks", new SubtasksHandler(manager));
+        server.createContext("/epics", new EpicsHandler(manager));
         server.createContext("/history", new HistoryHandler());
         server.createContext("/prioritized", new PrioritizedTasksHandler());
     }

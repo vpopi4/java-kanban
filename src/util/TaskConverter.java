@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class TaskConverter {
-    private static final Gson gson = new GsonBuilder()
+    public static final Gson gson = new GsonBuilder()
             .serializeNulls()
             .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
             .registerTypeAdapter(Duration.class, new DurationAdapter())
