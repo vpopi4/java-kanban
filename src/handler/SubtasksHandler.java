@@ -1,6 +1,5 @@
 package handler;
 
-import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 import com.sun.net.httpserver.HttpExchange;
@@ -67,16 +66,37 @@ public class SubtasksHandler extends BaseHttpHandler {
 
     private void handlePost(HttpExchange exchange)
             throws IllegalArgumentException, NoSuchElementException, IOException {
-        Subtask task;
+        Subtask subtask = extractSubtask(exchange);
 
+        if (subtask.getId() == null) {
+            subtask = manager.getSubtaskService().create(
+                    subtask.getEpicId(),
+                    subtask.getName(),
+                    subtask.getDescription(),
+                    subtask.getDuration(),
+                    subtask.getStartTime()
+            );
+        } else {
+            subtask = manager.getSubtaskService().update(subtask);
+        }
+
+        sendPayload(exchange, "subtask", TaskConverter.toJson(subtask));
+    }
+
+    private Subtask extractSubtask(HttpExchange exchange) {
         try (InputStream requestBody = exchange.getRequestBody()) {
             String bodyString = new String(requestBody.readAllBytes(), StandardCharsets.UTF_8);
-            JsonObject bodyJson = JsonParser.parseString(bodyString).getAsJsonObject();
 
-            Taskable taskable = TaskConverter.formJson(bodyJson.get("subtask").getAsString());
+            Taskable taskable = TaskConverter.formJson(JsonParser
+                    .parseString(bodyString)
+                    .getAsJsonObject()
+                    .get("subtask")
+                    .getAsJsonObject()
+                    .toString()
+            );
 
             if (taskable instanceof Subtask) {
-                task = (Subtask) taskable;
+                return (Subtask) taskable;
             } else {
                 throw new IllegalArgumentException("not a Subtask: " + taskable);
             }
@@ -87,20 +107,6 @@ public class SubtasksHandler extends BaseHttpHandler {
         } catch (Exception e) {
             throw new IllegalArgumentException("could not resolve request body");
         }
-
-        if (task.getId() == null) {
-            task = manager.getSubtaskService().create(
-                    task.getEpicId(),
-                    task.getName(),
-                    task.getDescription(),
-                    task.getDuration(),
-                    task.getStartTime()
-            );
-        } else {
-            task = manager.getSubtaskService().update(task);
-        }
-
-        sendPayload(exchange, "task", TaskConverter.toJson(task));
     }
 
     private void handleDelete(HttpExchange exchange) throws IllegalArgumentException, IOException {

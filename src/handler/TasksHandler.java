@@ -1,6 +1,5 @@
 package handler;
 
-import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 import com.sun.net.httpserver.HttpExchange;
@@ -68,20 +67,7 @@ public class TasksHandler extends BaseHttpHandler {
 
     private void handlePost(HttpExchange exchange)
             throws IllegalArgumentException, NoSuchElementException, IOException {
-        Taskable task;
-
-        try (InputStream requestBody = exchange.getRequestBody()) {
-            String bodyString = new String(requestBody.readAllBytes(), StandardCharsets.UTF_8);
-            JsonObject bodyJson = JsonParser.parseString(bodyString).getAsJsonObject();
-
-            task = TaskConverter.formJson(bodyJson.get("task").getAsString());
-        } catch (JsonSyntaxException e) {
-            throw new IllegalArgumentException("json object was expected in request body");
-        } catch (IllegalArgumentException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new IllegalArgumentException("could not resolve request body");
-        }
+        Task task = extractTask(exchange);
 
         if (task.getId() == null) {
             task = manager.getTaskService().create(
@@ -90,13 +76,37 @@ public class TasksHandler extends BaseHttpHandler {
                     task.getDuration(),
                     task.getStartTime()
             );
-        } else if (task instanceof Task) {
-            task = manager.getTaskService().update((Task) task);
         } else {
-            throw new IllegalStateException("not a Task: " + task);
+            task = manager.getTaskService().update(task);
         }
 
         sendPayload(exchange, "task", TaskConverter.toJson(task));
+    }
+
+    private static Task extractTask(HttpExchange exchange) {
+        try (InputStream requestBody = exchange.getRequestBody()) {
+            String bodyString = new String(requestBody.readAllBytes(), StandardCharsets.UTF_8);
+
+            Taskable taskable = TaskConverter.formJson(JsonParser
+                    .parseString(bodyString)
+                    .getAsJsonObject()
+                    .get("task")
+                    .getAsJsonObject()
+                    .toString()
+            );
+
+            if (taskable instanceof Task) {
+                return (Task) taskable;
+            } else {
+                throw new IllegalStateException("not a Task: " + taskable);
+            }
+        } catch (JsonSyntaxException e) {
+            throw new IllegalArgumentException("json object was expected in request body");
+        } catch (IllegalArgumentException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new IllegalArgumentException("could not resolve request body");
+        }
     }
 
     private void handleDelete(HttpExchange exchange) throws IllegalArgumentException, IOException {

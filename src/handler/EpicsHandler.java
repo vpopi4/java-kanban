@@ -70,10 +70,14 @@ public class EpicsHandler extends BaseHttpHandler {
 
         try (InputStream is = exchange.getRequestBody()) {
             String json = new String(is.readAllBytes(), StandardCharsets.UTF_8);
-            JsonObject body = JsonParser.parseString(json).getAsJsonObject();
+            JsonObject epicFieldInBody = JsonParser
+                    .parseString(json)
+                    .getAsJsonObject()
+                    .get("epic")
+                    .getAsJsonObject();
 
-            name = extractField(body, "name");
-            description = extractField(body, "description");
+            name = extractField(epicFieldInBody, "name");
+            description = extractField(epicFieldInBody, "description");
         } catch (JsonSyntaxException e) {
             throw new IllegalArgumentException("json object was expected in request body");
         } catch (IllegalArgumentException e) {
