@@ -4,8 +4,8 @@ import interfaces.model.Taskable;
 import model.Epic;
 import model.Subtask;
 import util.ManagerSaveException;
-import util.TaskType;
 import util.TaskConverter;
+import util.TaskType;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;

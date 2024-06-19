@@ -41,6 +41,9 @@ public class InMemorySubtaskService extends AbstractSubtaskService {
 
     @Override
     public Subtask update(Subtask subtask) throws NoSuchElementException {
+        subtask = super.update(subtask);
+
+
         try {
             TaskableValidator.checkIntersectionClosestSearch(
                     subtask,
@@ -51,6 +54,7 @@ public class InMemorySubtaskService extends AbstractSubtaskService {
             throw e;
         }
 
-        return super.update(subtask);
+
+        return subtask;
     }
 }

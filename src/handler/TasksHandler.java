@@ -22,6 +22,32 @@ public class TasksHandler extends BaseHttpHandler {
         this.manager = manager;
     }
 
+    private static Task extractTask(HttpExchange exchange) {
+        try (InputStream requestBody = exchange.getRequestBody()) {
+            String bodyString = new String(requestBody.readAllBytes(), StandardCharsets.UTF_8);
+
+            Taskable taskable = TaskConverter.formJson(JsonParser
+                    .parseString(bodyString)
+                    .getAsJsonObject()
+                    .get("task")
+                    .getAsJsonObject()
+                    .toString()
+            );
+
+            if (taskable instanceof Task) {
+                return (Task) taskable;
+            } else {
+                throw new IllegalStateException("not a Task: " + taskable);
+            }
+        } catch (JsonSyntaxException e) {
+            throw new IllegalArgumentException("json object was expected in request body");
+        } catch (IllegalArgumentException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new IllegalArgumentException("could not resolve request body");
+        }
+    }
+
     @Override
     public void handle(HttpExchange exchange) throws IOException {
         String method = exchange.getRequestMethod();
@@ -81,32 +107,6 @@ public class TasksHandler extends BaseHttpHandler {
         }
 
         sendPayload(exchange, "task", TaskConverter.toJson(task));
-    }
-
-    private static Task extractTask(HttpExchange exchange) {
-        try (InputStream requestBody = exchange.getRequestBody()) {
-            String bodyString = new String(requestBody.readAllBytes(), StandardCharsets.UTF_8);
-
-            Taskable taskable = TaskConverter.formJson(JsonParser
-                    .parseString(bodyString)
-                    .getAsJsonObject()
-                    .get("task")
-                    .getAsJsonObject()
-                    .toString()
-            );
-
-            if (taskable instanceof Task) {
-                return (Task) taskable;
-            } else {
-                throw new IllegalStateException("not a Task: " + taskable);
-            }
-        } catch (JsonSyntaxException e) {
-            throw new IllegalArgumentException("json object was expected in request body");
-        } catch (IllegalArgumentException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new IllegalArgumentException("could not resolve request body");
-        }
     }
 
     private void handleDelete(HttpExchange exchange) throws IllegalArgumentException, IOException {

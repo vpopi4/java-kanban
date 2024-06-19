@@ -10,10 +10,6 @@ import java.net.InetSocketAddress;
 public class HttpTaskServer {
     private final HttpServer server;
 
-    public static void main(String[] args) throws IOException {
-        HttpTaskServer taskServer = new HttpTaskServer();
-        taskServer.start();
-    }
     public HttpTaskServer() throws IOException {
         this(new Managers().getDefault());
     }
@@ -25,6 +21,11 @@ public class HttpTaskServer {
         server.createContext("/epics", new EpicsHandler(manager));
         server.createContext("/history", new HistoryHandler());
         server.createContext("/prioritized", new PrioritizedTasksHandler());
+    }
+
+    public static void main(String[] args) throws IOException {
+        HttpTaskServer taskServer = new HttpTaskServer();
+        taskServer.start();
     }
 
     public void start() {
