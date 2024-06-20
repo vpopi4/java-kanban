@@ -7,7 +7,6 @@ import interfaces.TaskManager;
 import interfaces.model.Taskable;
 import model.Task;
 import util.TaskConverter;
-import util.TaskableValidator;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,10 +15,8 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 public class TasksHandler extends BaseHttpHandler {
-    private final TaskManager manager;
-
     public TasksHandler(TaskManager manager) {
-        this.manager = manager;
+        super(manager);
     }
 
     private static Task extractTask(HttpExchange exchange) {
@@ -49,32 +46,13 @@ public class TasksHandler extends BaseHttpHandler {
     }
 
     @Override
-    public void handle(HttpExchange exchange) throws IOException {
-        String method = exchange.getRequestMethod();
+    protected void handleGet(HttpExchange exchange) throws IOException {
         String path = exchange.getRequestURI().getPath();
 
-        try {
-            switch (method) {
-                case "GET" -> {
-                    if (path.matches("/tasks/\\d+")) {
-                        handleGetById(exchange);
-                    } else {
-                        handleGetAll(exchange);
-                    }
-                }
-                case "POST" -> handlePost(exchange);
-                case "DELETE" -> handleDelete(exchange);
-                case null, default -> sendNotFound(exchange, "no such endpoint");
-            }
-        } catch (NoSuchElementException e) {
-            sendNotFound(exchange, e.getMessage());
-        } catch (TaskableValidator.IntersectionException e) {
-            sendIntersectionException(exchange, e.getMessage());
-        } catch (IllegalArgumentException e) {
-            sendBadRequest(exchange, e.getMessage());
-        } catch (Exception e) {
-            sendInternalServerError(exchange, "something went wrong");
-            e.printStackTrace();
+        if (path.matches("/tasks/\\d+")) {
+            handleGetById(exchange);
+        } else {
+            handleGetAll(exchange);
         }
     }
 
@@ -91,7 +69,8 @@ public class TasksHandler extends BaseHttpHandler {
         sendPayload(exchange, "task", TaskConverter.toJson(task));
     }
 
-    private void handlePost(HttpExchange exchange)
+    @Override
+    protected void handlePost(HttpExchange exchange)
             throws IllegalArgumentException, NoSuchElementException, IOException {
         Task task = extractTask(exchange);
 
@@ -109,21 +88,9 @@ public class TasksHandler extends BaseHttpHandler {
         sendPayload(exchange, "task", TaskConverter.toJson(task));
     }
 
-    private void handleDelete(HttpExchange exchange) throws IllegalArgumentException, IOException {
+    @Override
+    protected void handleDelete(HttpExchange exchange) throws IllegalArgumentException, IOException {
         manager.getTaskService().remove(extractId(exchange));
         sendOk(exchange);
-    }
-
-    private Integer extractId(HttpExchange exchange) throws IllegalArgumentException {
-        try {
-            String secondInPath = exchange
-                    .getRequestURI()
-                    .getPath()
-                    .split("/")
-                    [2];
-            return Integer.parseInt(secondInPath);
-        } catch (IndexOutOfBoundsException | NumberFormatException e) {
-            throw new IllegalArgumentException("id must be integer");
-        }
     }
 }

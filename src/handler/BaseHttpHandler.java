@@ -4,11 +4,66 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
+import interfaces.TaskManager;
+import util.TaskableValidator;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.NoSuchElementException;
 
 public abstract class BaseHttpHandler implements HttpHandler {
+    protected final TaskManager manager;
+
+    public BaseHttpHandler(TaskManager manager) {
+        this.manager = manager;
+    }
+
+    @Override
+    public void handle(HttpExchange exchange) throws IOException {
+        try {
+            switch (exchange.getRequestMethod()) {
+                case "GET" -> handleGet(exchange);
+                case "POST" -> handlePost(exchange);
+                case "DELETE" -> handleDelete(exchange);
+                case null, default -> sendNotFound(exchange, "no such endpoint");
+            }
+        } catch (NoSuchElementException e) {
+            sendNotFound(exchange, e.getMessage());
+        } catch (TaskableValidator.IntersectionException e) {
+            sendIntersectionException(exchange, e.getMessage());
+        } catch (IllegalArgumentException e) {
+            sendBadRequest(exchange, e.getMessage());
+        } catch (Exception e) {
+            sendInternalServerError(exchange, "something went wrong");
+            e.printStackTrace();
+        }
+    }
+
+    protected void handleGet(HttpExchange exchange) throws IOException {
+        sendNotFound(exchange, "no such endpoint");
+    }
+
+    protected void handlePost(HttpExchange exchange) throws IOException {
+        sendNotFound(exchange, "no such endpoint");
+    }
+
+    protected void handleDelete(HttpExchange exchange) throws IOException {
+        sendNotFound(exchange, "no such endpoint");
+    }
+
+    protected Integer extractId(HttpExchange exchange) throws IllegalArgumentException {
+        try {
+            String secondInPath = exchange
+                    .getRequestURI()
+                    .getPath()
+                    .split("/")
+                    [2];
+            return Integer.parseInt(secondInPath);
+        } catch (IndexOutOfBoundsException | NumberFormatException e) {
+            throw new IllegalArgumentException("id must be integer");
+        }
+    }
+
     protected void sendOk(HttpExchange exchange) throws IOException {
         sendResponse(exchange, 201, "");
     }

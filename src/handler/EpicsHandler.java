@@ -16,38 +16,18 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 public class EpicsHandler extends BaseHttpHandler {
-    private final TaskManager manager;
-
     public EpicsHandler(TaskManager manager) {
-        this.manager = manager;
+        super(manager);
     }
 
     @Override
-    public void handle(HttpExchange exchange) throws IOException {
-
-        String method = exchange.getRequestMethod();
+    protected void handleGet(HttpExchange exchange) throws IOException {
         String path = exchange.getRequestURI().getPath();
 
-        try {
-            switch (method) {
-                case "GET" -> {
-                    if (path.matches("/epics/\\d+")) {
-                        handleGetById(exchange);
-                    } else {
-                        handleGetAll(exchange);
-                    }
-                }
-                case "POST" -> handlePost(exchange);
-                case "DELETE" -> handleDelete(exchange);
-                case null, default -> sendNotFound(exchange, "no such endpoint");
-            }
-        } catch (NoSuchElementException e) {
-            sendNotFound(exchange, e.getMessage());
-        } catch (IllegalArgumentException e) {
-            sendBadRequest(exchange, e.getMessage());
-        } catch (Exception e) {
-            sendInternalServerError(exchange, "something went wrong");
-            e.printStackTrace();
+        if (path.matches("/epics/\\d+")) {
+            handleGetById(exchange);
+        } else {
+            handleGetAll(exchange);
         }
     }
 
@@ -64,7 +44,8 @@ public class EpicsHandler extends BaseHttpHandler {
         sendPayload(exchange, "epic", TaskConverter.toJson(task));
     }
 
-    private void handlePost(HttpExchange exchange) throws IllegalArgumentException, IOException {
+    @Override
+    protected void handlePost(HttpExchange exchange) throws IllegalArgumentException, IOException {
         String name;
         String description;
 
@@ -90,22 +71,10 @@ public class EpicsHandler extends BaseHttpHandler {
         sendPayload(exchange, "epic", TaskConverter.toJson(epic));
     }
 
-    private void handleDelete(HttpExchange exchange) throws IllegalArgumentException, IOException {
+    @Override
+    protected void handleDelete(HttpExchange exchange) throws IllegalArgumentException, IOException {
         manager.getEpicService().remove(extractId(exchange));
         sendOk(exchange);
-    }
-
-    private Integer extractId(HttpExchange exchange) throws IllegalArgumentException {
-        try {
-            String secondInPath = exchange
-                    .getRequestURI()
-                    .getPath()
-                    .split("/")
-                    [2];
-            return Integer.parseInt(secondInPath);
-        } catch (IndexOutOfBoundsException | NumberFormatException e) {
-            throw new IllegalArgumentException("id must be integer");
-        }
     }
 
     private String extractField(JsonObject json, String fieldName) {
