@@ -4,8 +4,8 @@ import interfaces.model.Taskable;
 import model.Epic;
 import model.Subtask;
 import util.ManagerSaveException;
+import util.TaskConverter;
 import util.TaskType;
-import util.TaskableFactory;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -31,7 +31,7 @@ public class FileBackedRepository extends InMemoryRepository {
             StringBuilder sb = new StringBuilder(header);
 
             for (Map.Entry<Integer, Taskable> entry : store.entrySet()) {
-                sb.append(TaskableFactory.serialize(entry.getValue()));
+                sb.append(TaskConverter.toCsvRecord(entry.getValue()));
                 sb.append("\n");
             }
 
@@ -67,7 +67,7 @@ public class FileBackedRepository extends InMemoryRepository {
             ).split("\n");
 
             for (int i = 1; i < data.length; i++) {
-                Taskable record = TaskableFactory.deserialize(data[i]);
+                Taskable record = TaskConverter.fromCsvRecord(data[i]);
                 backToTheStore(record);
             }
 

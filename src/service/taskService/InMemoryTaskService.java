@@ -43,6 +43,8 @@ public class InMemoryTaskService extends AbstractTaskService {
 
     @Override
     public Task update(Task task) throws NoSuchElementException, IllegalArgumentException {
+        task = super.update(task);
+
         try {
             TaskableValidator.checkIntersectionClosestSearch(
                     task,
@@ -54,6 +56,6 @@ public class InMemoryTaskService extends AbstractTaskService {
         }
 
 
-        return super.update(task);
+        return task;
     }
 }

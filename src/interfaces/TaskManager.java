@@ -1,5 +1,6 @@
 package interfaces;
 
+import interfaces.model.Taskable;
 import interfaces.service.EpicService;
 import interfaces.service.SubtaskService;
 import interfaces.service.TaskService;
@@ -17,4 +18,5 @@ public interface TaskManager {
 
     List<Task> getHistory();
 
+    List<Taskable> getPrioritizedTasks();
 }

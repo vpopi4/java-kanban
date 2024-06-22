@@ -12,7 +12,7 @@ import java.time.Month;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class TaskableFactoryTest {
+class TaskConverterTest {
     @Test
     public void testSerializeMethod_forTask() {
         // Arrange
@@ -24,7 +24,7 @@ class TaskableFactoryTest {
 
         // Act
         String expected = "0,TASK,Some name,NEW,Lorem ipsum,60000,null,";
-        String actual = TaskableFactory.serialize(entity);
+        String actual = TaskConverter.toCsvRecord(entity);
 
         // Assert
         assertEquals(expected, actual);
@@ -37,7 +37,7 @@ class TaskableFactoryTest {
 
         // Act
         expected = "0,TASK,Some name,DONE,leading and trailing space here!,0,2024-06-10T10:00,";
-        actual = TaskableFactory.serialize(entity);
+        actual = TaskConverter.toCsvRecord(entity);
 
         // Assert
         assertEquals(expected, actual);
@@ -53,7 +53,7 @@ class TaskableFactoryTest {
 
         String expected = "0,EPIC,Some name,NEW,Lorem ipsum,40000,null,";
 
-        String actual = TaskableFactory.serialize(entity);
+        String actual = TaskConverter.toCsvRecord(entity);
 
         assertEquals(expected, actual);
     }
@@ -69,7 +69,7 @@ class TaskableFactoryTest {
 
         String expected = "1,SUBTASK,Some name,DONE,Lorem ipsum,666,2024-06-10T10:00,0";
 
-        String actual = TaskableFactory.serialize(entity);
+        String actual = TaskConverter.toCsvRecord(entity);
 
         assertEquals(expected, actual);
     }
@@ -78,7 +78,7 @@ class TaskableFactoryTest {
     public void testDeserialization() {
         String record = "0,EPIC,Some name,NEW,Lorem ipsum,90000,null";
 
-        Taskable deserializedRecord = TaskableFactory.deserialize(record);
+        Taskable deserializedRecord = TaskConverter.fromCsvRecord(record);
 
         assertEquals(deserializedRecord.getType(), TaskType.EPIC);
         assertInstanceOf(Epic.class, deserializedRecord);
@@ -90,7 +90,7 @@ class TaskableFactoryTest {
         assertNull(deserializedRecord.getStartTime());
 
         record = "1,SUBTASK,SubSome name,IN_PROGRESS,Lorem ipsum dollar,0,null,0";
-        deserializedRecord = TaskableFactory.deserialize(record);
+        deserializedRecord = TaskConverter.fromCsvRecord(record);
 
         assertEquals(deserializedRecord.getType(), TaskType.SUBTASK);
         assertEquals(1, deserializedRecord.getId());
